@@ -9,14 +9,10 @@
 #include "SpriteAnimation.h"
 #include <sstream>
 
-float zTime = 0.1f;
-float zTimer = zTime;
-bool up = false;
 
 /*********** constructor/destructor ***************/
 Model_Gameplay::Model_Gameplay()
 {
-	minimap = NULL;
 }
 
 Model_Gameplay::~Model_Gameplay()
@@ -43,26 +39,19 @@ void Model_Gameplay::Init()
 	lightPos[0].Set(1000.f, 500.f, 0.f);
 	lightPos[1].Set(0.f, 800.f, 0.f);
 
+	//weapon
+	Weapon::InitAmmo(elementObject);
+
 	//object
 	InitObject();
-}
 
-void Model_Gameplay::InitObject()
-{	
-	/** Default pos : 0, 0, 0
-		Default scale: 1, 1, 1
-	**/
+	//player
+	//!! COLLISION BUG: IF SCALE IS 50 BY 50 AND WALL IS EXACTLY 12 SCALE THICK, WILL GO THRU
+	//WARNING: DO NOT GO BEYOND 1000 speed since sweep AABB bug not solved yet
+	player.Init(Vector3(200, 220, 1), Vector3(50, 50, 1), Character::E, 100, 100, 5000);
+	elementObject.push_back(&player);
 
-	Object* obj_ptr;
-
-	/** Player **/
-	obj_ptr = new Object;
-	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
-	obj_ptr->translateObject(m_view_width / 2, m_view_height / 2, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(175, 75, 75);
-	elementObject.push_back(obj_ptr);
-
-	/** init **/
+	/* Init all game objects */
 	for(std::vector<Object*>::iterator it = elementObject.begin(); it != elementObject.end(); ++it)
 	{
 		Object *go = (Object *)*it;
@@ -70,33 +59,57 @@ void Model_Gameplay::InitObject()
 	}
 }
 
+void Model_Gameplay::InitObject()
+{	
+	/** Default pos : 0, 0, 0
+		Default scale: 1, 1, 1
+		m_view_width = 2400.f;
+		m_view_height = 1600.f;
+	**/
+
+	Object* obj_ptr;
+
+	/** Walls **/
+	//for now Z will be 100 as z collision check not removed yet
+	//top
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->translateObject(m_view_width * 0.5f, 1590, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(m_view_width, 12, 100);	
+	elementObject.push_back(obj_ptr);
+
+	//bottom
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->translateObject(m_view_width * 0.5f, 10, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(m_view_width, 12, 100);	
+	elementObject.push_back(obj_ptr);
+
+	//left
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->translateObject(10, m_view_height * 0.5f, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(12, m_view_height, 100);	
+	elementObject.push_back(obj_ptr);
+
+	//right
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->translateObject(2390, m_view_height * 0.5f, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(12, m_view_height, 100);	
+	elementObject.push_back(obj_ptr);
+}
+
 void Model_Gameplay::Update(double dt, bool* myKeys)
 {
 	/* model update */
 	Model::Update(dt, myKeys);
 
-	//Vector3 vel;
-	//vel.SetZero();
+	/* Update Ammo */
+	Weapon::UpdateAmmos(elementObject);
 
-	///* Set up collision */
-	//elementObject[0]->StartChecking(vel);
-
-	///* Check collision */
-	//elementObject[0]->checkCollision2(*elementObject[68]);
-	//elementObject[0]->checkCollision2(*elementObject[69]);
-	//elementObject[0]->checkCollision2(*elementObject[2]);
-	//elementObject[0]->checkCollision2(*elementObject[1]);
-
-	//for(int i = 4; i < 68; ++i)
-	//{
-	//	elementObject[0]->checkCollision2(*elementObject[i]);
-	//}
-
-	///* Reset */
-	//elementObject[0]->collideBox.Reset();
-
-	///* collision response */
-	//elementObject[0]->Response(vel);
+	/* Update player */
+	player.Update(dt, myKeys, elementObject);
 }
 
 void Model_Gameplay::Exit()

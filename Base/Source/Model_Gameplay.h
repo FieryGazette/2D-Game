@@ -4,6 +4,7 @@
 
 class Model_Gameplay : public Model
 {
+	Player player;
 public:
 /*********** constructor/destructor ***************/
 	Model_Gameplay();

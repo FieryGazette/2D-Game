@@ -13,7 +13,7 @@ int main( void )
 	myModel = new Model_Gameplay;
 	
 	/* Create View and pass in address of model you want, console dimemsions and Mode */
-	View_3D_Game myView(myModel, 1200, 800, View::TWO_D);
+	View_3D_Game myView(myModel, 975, 650, View::TWO_D);
 
 	/* Pass in View into Controller and set mode (2D/3D) */
 	Controller_3D_Game myController;

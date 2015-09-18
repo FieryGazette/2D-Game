@@ -1,13 +1,14 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
-#include "Entity.h"
+#include "Object.h"
+#include "Weapon.h"
 
 /*******************************************************/
 /*
-Character class for all living things.
+Character class for all living things. Only for 2D.
 */
 /*******************************************************/
-class Character : public Entity
+class Character : public Object
 {
 public:
 	/* Character can only go 8 diff. directions */
@@ -34,11 +35,10 @@ public:
 	/* Getter/Setter */
 	Vector3 getPosition();
 	Vector3 getScale();
-protected:
 
-private:
-	Collision collideBox;	//collision box
+protected:
 	DIRECTION facingDir;
+	Vector3 vel;
 };
 
 #endif

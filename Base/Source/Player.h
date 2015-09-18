@@ -2,22 +2,52 @@
 #define PLAYER_H
 #include "Character.h"
 
+/** Put here for controller and model and character to access, got better way? **/
+enum CONTROLS
+{
+	/* using ascii table */
+	FORWARD,	//w
+	BACKWARD,	//s
+	LEFT,	//a
+	RIGHT,	//d
+	CROUCH,	//c
+	RELOAD,	//r
+	JUMP,	//space bar
+	FLY_UP,	//k
+	FLY_DOWN,	//l
+	PAUSE,	//p
+	OPEN,	//o
+
+	/* using mouse/controller... */
+	SHOOT,	//mouse left
+	AIM,	//mouse right
+	TOGGLE_SPRINT,	//shift
+	SCROLL_UP,	//mouse scroll
+	SCROLL_DOWN,	//mouse scroll
+	ARROW_UP,
+	ARROW_DOWN,
+	ARROW_LEFT,
+	ARROW_RIGHT,
+
+	TOTAL_CONTROL,
+};
+
 class Player : public Character
 {
-	/* points */
-	int score;
+	/* Basics */
+	float health;
+	float staminia;
+	Weapon weapon;
+	float speed;
 public:
 	/* constructor / destrutor */
 	Player();
-	virtual ~Player();
+	~Player();
 
-	/* core */
-	virtual void Set(Mesh* mesh, Vector3 scale, Vector3 position, float angle, Vector3 axis, float mass, Object* parent, bool light, int healthPoint, Gun::TYPE initType);
-	void Update(bool keyPressedFire, bool keyPressedReload, bool* myKeys, const double dt);		//Controller::myKeys
-	void changeWeapons(bool goDown, bool goUp);
-
-	void increaseScore(int amt);
-	int getScore();
+	/* Core */
+	void Init(Vector3 pos, Vector3 scale, DIRECTION facingDir, float health, float staminia, float speed);
+	void Update(double dt, bool* myKeys, vector<Object*>& objectLists);
+	Mesh* getMesh();
 };
 
 #endif

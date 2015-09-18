@@ -1,5 +1,6 @@
 #ifndef MODEL_H
 #define MODEL_H
+#include "Player.h"
 #include "MeshList.h"
 #include "MatrixStack.h"
 #include "Mtx44.h"
@@ -11,36 +12,6 @@
 #include <sstream>
 #include <vector>
 using namespace std;
-
-/** Put here for controller and model and character to access, got better way? **/
-enum CONTROLS
-{
-	/* using ascii table */
-	FORWARD,	//w
-	BACKWARD,	//s
-	LEFT,	//a
-	RIGHT,	//d
-	CROUCH,	//c
-	RELOAD,	//r
-	JUMP,	//space bar
-	FLY_UP,	//k
-	FLY_DOWN,	//l
-	PAUSE,	//p
-	OPEN,	//o
-
-	/* using mouse/controller... */
-	SHOOT,	//mouse left
-	AIM,	//mouse right
-	TOGGLE_SPRINT,	//shift
-	SCROLL_UP,	//mouse scroll
-	SCROLL_DOWN,	//mouse scroll
-	ARROW_UP,
-	ARROW_DOWN,
-	ARROW_LEFT,
-	ARROW_RIGHT,
-
-	TOTAL_CONTROL,
-};
 
 class Model
 {
@@ -94,9 +65,6 @@ public:
 	unsigned short getViewWidth();
 	unsigned short getViewHeight();
 	Vector3 getWorldDimension();
-
-	/************* Minimap *****************/
-	MiniMap* minimap;
 };
 
 #endif

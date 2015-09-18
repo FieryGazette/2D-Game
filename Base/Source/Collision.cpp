@@ -13,7 +13,7 @@ vector<Collision*> Collision::slideList;
 vector<Collision*>::iterator Collision::it;
 
 Vector3 Collision::currentPos;	//current position
-float Collision::offset = 0.1f;	//cannot be 0 (or will considered collision even if touching)
+float Collision::offset = 0.01f;	//cannot be 0 (or will considered collision even if touching)
 Vector3 Collision::startZone, Collision::endZone;
 
 //Vector3 Collision::normal;
@@ -42,6 +42,7 @@ void Collision::Set(Vector3 pos, Vector3 scale, TYPE type)
 }
 
 /* Update */
+Vector3 veryOriginalVel;
 void Collision::Start(const Vector3& objectPos, const Vector3& velocity)
 {
 	if(type == BOX)
@@ -52,7 +53,7 @@ void Collision::Start(const Vector3& objectPos, const Vector3& velocity)
 		remainingTime = 1.f;
 
 		/* set velocity */
-		vel = velocity;
+		veryOriginalVel = vel = velocity;
 		originalVel = vel;	//store original velocity
 		
 		/* set pos */
@@ -166,11 +167,11 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 	bool checkX = false, checkY = false, checkZ = false;
 
 	/* Check eligibility: not 0 vel */
-	if(originalVel.x)
+	if(originalVel.x != 0.f)
 		checkX = true;
-	if(originalVel.y)
+	if(originalVel.y != 0.f)
 		checkY = true;
-	if(originalVel.z)
+	if(originalVel.z != 0.f)
 		checkZ = true;
 
 	/** Get entry and exit length **/
@@ -238,9 +239,14 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 		zExit = zInvExit * (1.f / originalVel.z);
 	}
 
-	if( xEntry > 1.f ) xEntry = -std::numeric_limits<float>::max();
-	if( yEntry > 1.f ) yEntry = -std::numeric_limits<float>::max();
-	if( zEntry > 1.f ) zEntry = -std::numeric_limits<float>::max();
+
+	/**************************** BUG WHEN GOING PERFECT HORIZONTAL ****************************/
+	if( xInvEntry <= offset && xInvEntry >= -offset && originalVel.x != 0.f)
+		return 0.f;
+	else if( yInvEntry <= offset && yInvEntry >= -offset && originalVel.y != 0.f)
+		return 0.f;
+	else if( zInvEntry <= offset && zInvEntry >= -offset && originalVel.z != 0.f)
+		return 0.f;
 
 	//max
 	float entryTime = (xEntry > yEntry) ? xEntry : yEntry;	//compare x, y first
@@ -251,18 +257,13 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 	exitTime = (zExit < exitTime) ? zExit : exitTime;	//compare current result with z
 
 	/** Check if collision occurs **/
-	if(exitTime < entryTime || xEntry < 0.0f && yEntry < 0.0f && zEntry < 0.0f || xEntry > 1.0f || yEntry > 1.0f|| zEntry > 1.0f)
+	if(exitTime < entryTime || xEntry < 0.0f && yEntry < 0.0f && zEntry < 0.0f || xEntry > 1.0f || yEntry > 1.0f || zEntry > 1.0f)
 	{
 		return 1.0;
 	}
 
 	/** set normal **/
 	current.normal.SetZero();
-
-	//if x/y/zEntry is largest, means that x/y/z surface is touching the other object, so it is colliding
-	//cout << xEntry << ' ' << yEntry << ' ' << zEntry << endl;
-	//collided X side
-
 
 	if( xEntry > yEntry && xEntry > zEntry )
 	{
@@ -385,11 +386,11 @@ bool Collision::broadPhrase(Vector3& originalPos, Vector3& finalPos, Vector3& ch
 
 void Collision::Reset()
 {
-	/* Check for the other axis after the first one is collided */
+	/* Check for 2 other axis after the first one is collided */
 	if( !normal.IsZero() && collided_Box != NULL )
 	{
 		CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	//axis #2
-	//	CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	  //axis #3
+		//CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	  //axis #3
 	}
 }
 

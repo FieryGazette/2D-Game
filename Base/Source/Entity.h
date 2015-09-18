@@ -17,7 +17,7 @@ class Entity
 public:
 	/* Constructor/destructor */
 	Entity();
-	~Entity();
+	virtual ~Entity();
 
 protected:
 	/* Physical skeleton */
