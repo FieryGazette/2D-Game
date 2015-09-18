@@ -385,7 +385,7 @@ bool Collision::broadPhrase(Vector3& originalPos, Vector3& finalPos, Vector3& ch
 
 void Collision::Reset()
 {
-	/* Check for 2 other axis after the first one is collided */
+	/* Check for the other axis after the first one is collided */
 	if( !normal.IsZero() && collided_Box != NULL )
 	{
 		CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	//axis #2
