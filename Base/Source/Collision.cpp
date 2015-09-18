@@ -13,7 +13,7 @@ vector<Collision*> Collision::slideList;
 vector<Collision*>::iterator Collision::it;
 
 Vector3 Collision::currentPos;	//current position
-float Collision::offset = 0.0001f;	//cannot be 0 (or will considered collision even if touching)
+float Collision::offset = 0.01f;	//cannot be 0 (or will considered collision even if touching)
 Vector3 Collision::startZone, Collision::endZone;
 
 //Vector3 Collision::normal;
@@ -239,17 +239,14 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 		zExit = zInvExit * (1.f / originalVel.z);
 	}
 
-	///**************************** BUG WHEN GOING PERFECT HORIZONTAL ****************************/
-	//if( xEntry <= offset && originalVel.x != 0.f && originalVel.y == 0.f && originalVel.z == 0.f )
-	//	return 0.f;
-	//else if( yEntry <= offset && originalVel.y != 0.f && originalVel.x == 0.f && originalVel.z == 0.f )
-	//	return 0.f;
-	//else if( zEntry <= offset && originalVel.z != 0.f && originalVel.x == 0.f && originalVel.y == 0.f )
-	//	return 0.f;
 
-	if (yEntry > 1.0f) yEntry = -std::numeric_limits<float>::max();
-	if (xEntry > 1.0f) xEntry = -std::numeric_limits<float>::max();
-	if (zEntry > 1.0f) zEntry = -std::numeric_limits<float>::max();
+	/**************************** BUG WHEN GOING PERFECT HORIZONTAL ****************************/
+	if( xInvEntry <= offset && xInvEntry >= -offset && originalVel.x != 0.f)
+		return 0.f;
+	else if( yInvEntry <= offset && yInvEntry >= -offset && originalVel.y != 0.f)
+		return 0.f;
+	else if( zInvEntry <= offset && zInvEntry >= -offset && originalVel.z != 0.f)
+		return 0.f;
 
 	//max
 	float entryTime = (xEntry > yEntry) ? xEntry : yEntry;	//compare x, y first
@@ -260,31 +257,9 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 	exitTime = (zExit < exitTime) ? zExit : exitTime;	//compare current result with z
 
 	/** Check if collision occurs **/
-	if(exitTime < entryTime)
+	if(exitTime < entryTime || xEntry < 0.0f && yEntry < 0.0f && zEntry < 0.0f || xEntry > 1.0f || yEntry > 1.0f || zEntry > 1.0f)
 	{
-		return 1.f;
-	}
-
-	/** NOT GOOD: CHEATING OFFSET :((( **/
-	if( xEntry < 0.f && yEntry < 0.f && zEntry < 0.f)
-		return -0.00001f;
-
-	if( xEntry < 0.f)
-	{
-		if( !inZone(currentStart.x, currentEnd.x, checkStart.x, checkEnd.x) )
-			return 1.f;
-	}
-
-	if( yEntry < 0.f)
-	{
-		if( !inZone(currentStart.y, currentEnd.y, checkStart.y, checkEnd.y) )
-			return 1.f;
-	}
-
-	if( zEntry < 0.f)
-	{
-		if( !inZone(currentStart.z, currentEnd.z, checkStart.z, checkEnd.z) )
-			return 1.f;
+		return 1.0;
 	}
 
 	/** set normal **/
