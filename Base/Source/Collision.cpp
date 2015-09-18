@@ -241,11 +241,12 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 
 
 	/**************************** BUG WHEN GOING PERFECT HORIZONTAL ****************************/
-	if( xInvEntry <= offset && xInvEntry >= -offset && originalVel.x != 0.f)
+	cout << xEntry << ' ' << yEntry << ' ' << zEntry << "  Vel: " << originalVel << endl;
+	if( xEntry <= offset && originalVel.x != 0.f)
 		return 0.f;
-	else if( yInvEntry <= offset && yInvEntry >= -offset && originalVel.y != 0.f)
+	else if( yEntry <= offset && originalVel.y != 0.f)
 		return 0.f;
-	else if( zInvEntry <= offset && zInvEntry >= -offset && originalVel.z != 0.f)
+	else if( zEntry <= offset && originalVel.z != 0.f)
 		return 0.f;
 
 	//max

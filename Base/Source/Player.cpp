@@ -48,6 +48,8 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	weapon.Update(dt, position, dir, myKeys[RELOAD]);
 
 	/* Movement and collision check */
+	vel *- dt;
+
 	/* Set up collision */
 	StartChecking(vel);
 
