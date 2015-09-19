@@ -164,6 +164,59 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 	checkStart = check.position - check.scale * 0.5f;
 	checkEnd = check.position + check.scale * 0.5f;
 
+	Vector3 finalStart = current.position - current.scale * 0.5f;
+	Vector3 finalEnd = current.position + current.scale * 0.5f;
+
+	/* Check if checkStart and checkEnd exceeds broadphrase length */
+	//if so, cutoff
+	//x
+	if( originalVel.x > 0)
+	{
+		if( checkEnd.x > finalEnd.x )
+			checkEnd.x = finalEnd.x;
+		if( checkStart.x < currentStart.x )
+			checkStart.x = currentStart.x;
+	}
+	else
+	{
+		if( checkEnd.x > currentEnd.x )
+			checkEnd.x = currentEnd.x;
+		if( checkStart.x < finalStart.x )
+			checkStart.x = finalStart.x;
+	}
+
+	//y
+	if( originalVel.y > 0)
+	{
+		if( checkEnd.y > finalEnd.y )
+			checkEnd.y = finalEnd.y;
+		if( checkStart.y < currentStart.y )
+			checkStart.y = currentStart.y;
+	}
+	else
+	{
+		if( checkEnd.y > currentEnd.y )
+			checkEnd.y = currentEnd.y;
+		if( checkStart.y < finalStart.y )
+			checkStart.y = finalStart.y;
+	}
+
+	//z
+	if( originalVel.z > 0)
+	{
+		if( checkEnd.z > finalEnd.z )
+			checkEnd.z = finalEnd.z;
+		if( checkStart.z < currentStart.z )
+			checkStart.z = currentStart.z;
+	}
+	else
+	{
+		if( checkEnd.z > currentEnd.z )
+			checkEnd.z = currentEnd.z;
+		if( checkStart.z < finalStart.z )
+			checkStart.z = finalStart.z;
+	}
+
 	bool checkX = false, checkY = false, checkZ = false;
 
 	/* Check eligibility: not 0 vel */
