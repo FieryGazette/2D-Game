@@ -167,55 +167,55 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 	Vector3 finalStart = current.position - current.scale * 0.5f;
 	Vector3 finalEnd = current.position + current.scale * 0.5f;
 
-	/* Check if checkStart and checkEnd exceeds broadphrase length */
-	//if so, cutoff
-	//x
-	if( originalVel.x > 0)
-	{
-		if( checkEnd.x > finalEnd.x )
-			checkEnd.x = finalEnd.x;
-		if( checkStart.x < currentStart.x )
-			checkStart.x = currentStart.x;
-	}
-	else
-	{
-		if( checkEnd.x > currentEnd.x )
-			checkEnd.x = currentEnd.x;
-		if( checkStart.x < finalStart.x )
-			checkStart.x = finalStart.x;
-	}
+	///* Check if checkStart and checkEnd exceeds broadphrase length */
+	////if so, cutoff
+	////x
+	//if( originalVel.x > 0)
+	//{
+	//	if( checkEnd.x > finalEnd.x )
+	//		checkEnd.x = finalEnd.x;
+	//	if( checkStart.x < currentStart.x )
+	//		checkStart.x = currentStart.x;
+	//}
+	//else
+	//{
+	//	if( checkEnd.x > currentEnd.x )
+	//		checkEnd.x = currentEnd.x;
+	//	if( checkStart.x < finalStart.x )
+	//		checkStart.x = finalStart.x;
+	//}
 
-	//y
-	if( originalVel.y > 0)
-	{
-		if( checkEnd.y > finalEnd.y )
-			checkEnd.y = finalEnd.y;
-		if( checkStart.y < currentStart.y )
-			checkStart.y = currentStart.y;
-	}
-	else
-	{
-		if( checkEnd.y > currentEnd.y )
-			checkEnd.y = currentEnd.y;
-		if( checkStart.y < finalStart.y )
-			checkStart.y = finalStart.y;
-	}
+	////y
+	//if( originalVel.y > 0)
+	//{
+	//	if( checkEnd.y > finalEnd.y )
+	//		checkEnd.y = finalEnd.y;
+	//	if( checkStart.y < currentStart.y )
+	//		checkStart.y = currentStart.y;
+	//}
+	//else
+	//{
+	//	if( checkEnd.y > currentEnd.y )
+	//		checkEnd.y = currentEnd.y;
+	//	if( checkStart.y < finalStart.y )
+	//		checkStart.y = finalStart.y;
+	//}
 
-	//z
-	if( originalVel.z > 0)
-	{
-		if( checkEnd.z > finalEnd.z )
-			checkEnd.z = finalEnd.z;
-		if( checkStart.z < currentStart.z )
-			checkStart.z = currentStart.z;
-	}
-	else
-	{
-		if( checkEnd.z > currentEnd.z )
-			checkEnd.z = currentEnd.z;
-		if( checkStart.z < finalStart.z )
-			checkStart.z = finalStart.z;
-	}
+	////z
+	//if( originalVel.z > 0)
+	//{
+	//	if( checkEnd.z > finalEnd.z )
+	//		checkEnd.z = finalEnd.z;
+	//	if( checkStart.z < currentStart.z )
+	//		checkStart.z = currentStart.z;
+	//}
+	//else
+	//{
+	//	if( checkEnd.z > currentEnd.z )
+	//		checkEnd.z = currentEnd.z;
+	//	if( checkStart.z < finalStart.z )
+	//		checkStart.z = finalStart.z;
+	//}
 
 	bool checkX = false, checkY = false, checkZ = false;
 
@@ -292,14 +292,13 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 		zExit = zInvExit * (1.f / originalVel.z);
 	}
 
-
 	/**************************** BUG WHEN GOING PERFECT HORIZONTAL ****************************/
-	if( xInvEntry <= offset && xInvEntry >= -offset && originalVel.x != 0.f)
+	/*if( xInvEntry <= offset && xInvEntry >= -offset && originalVel.x != 0.f)
 		return 0.f;
 	else if( yInvEntry <= offset && yInvEntry >= -offset && originalVel.y != 0.f)
 		return 0.f;
 	else if( zInvEntry <= offset && zInvEntry >= -offset && originalVel.z != 0.f)
-		return 0.f;
+		return 0.f;*/
 
 	//max
 	float entryTime = (xEntry > yEntry) ? xEntry : yEntry;	//compare x, y first
@@ -308,9 +307,11 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 	//min
 	float exitTime = (xExit < yExit) ? xExit : yExit;	//compare x, y first
 	exitTime = (zExit < exitTime) ? zExit : exitTime;	//compare current result with z
+	//cout << checkStart << ' ' << checkEnd << endl;
+
 
 	/** Check if collision occurs **/
-	if(exitTime < entryTime || xEntry < 0.0f && yEntry < 0.0f && zEntry < 0.0f || xEntry > 1.0f || yEntry > 1.0f || zEntry > 1.0f)
+	if(exitTime < entryTime || xEntry < 0.f && yEntry < 0.f && zEntry < 0.f || xEntry > 1.0f || yEntry > 1.0f || zEntry > 1.0f)
 	{
 		return 1.0;
 	}
@@ -350,6 +351,17 @@ bool Collision::BoxToBox(Collision* current, Collision* check)
 	{
 		slideList.push_back(check);
 	}
+
+	///** Check if they start off colliding **/
+	///** Get start and end point **/
+	currentStart = current->startingPos - current->scale * 0.5f;
+	currentEnd = current->startingPos + current->scale * 0.5f;
+
+	checkStart = check->position - check->scale * 0.5f;
+	checkEnd = check->position + check->scale * 0.5f;
+
+	if( checkAABBCollide(currentStart, currentEnd, checkStart, checkEnd) )	//already start off colliding
+		return false;
 
 	/************************************ Check if box needs collision check (BroadPhrase test) ************************************/
 	if( !broadPhrase(current->startingPos, current->position, check->position, current->scale, check->scale) )
@@ -439,12 +451,12 @@ bool Collision::broadPhrase(Vector3& originalPos, Vector3& finalPos, Vector3& ch
 
 void Collision::Reset()
 {
-	/* Check for 2 other axis after the first one is collided */
-	if( !normal.IsZero() && collided_Box != NULL )
-	{
-		CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	//axis #2
-		//CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	  //axis #3
-	}
+	///* Check for 2 other axis after the first one is collided */
+	//if( !normal.IsZero() && collided_Box != NULL )
+	//{
+	//	CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	//axis #2
+	//	CheckAndResponse(!normal.x, !normal.y, !normal.z, *this, slideList);	  //axis #3
+	//}
 }
 
 bool Collision::CheckAndResponse(bool x, bool y, bool z, Collision& current, vector<Collision*>& checkList)

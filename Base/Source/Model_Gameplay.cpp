@@ -40,7 +40,7 @@ void Model_Gameplay::Init()
 	lightPos[1].Set(0.f, 800.f, 0.f);
 
 	//weapon
-	Weapon::InitAmmo(elementObject);
+	//Weapon::InitAmmo(elementObject);
 
 	//object
 	InitObject();
@@ -48,7 +48,7 @@ void Model_Gameplay::Init()
 	//player
 	//!! COLLISION BUG: IF SCALE IS 50 BY 50 AND WALL IS EXACTLY 12 SCALE THICK, WILL GO THRU
 	//WARNING: DO NOT GO BEYOND 1000 speed since sweep AABB bug not solved yet
-	player.Init(Vector3(200, 220, 1), Vector3(50, 50, 1), Character::E, 100, 100, 5000);
+	player.Init(Vector3(800, 800, 1), Vector3(50, 50, 1), Character::E, 100, 100, 150);
 	elementObject.push_back(&player);
 
 	/* Init all game objects */
@@ -69,34 +69,78 @@ void Model_Gameplay::InitObject()
 
 	Object* obj_ptr;
 
-	/** Walls **/
+	/* WALL 1 */
 	//for now Z will be 100 as z collision check not removed yet
 	//top
 	obj_ptr = new Object;
 	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
-	obj_ptr->translateObject(m_view_width * 0.5f, 1590, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(m_view_width, 12, 100);	
+
+	//RIGHT
+	obj_ptr->translateObject(2000, 950, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(6, 1200, 100);	
+
 	elementObject.push_back(obj_ptr);
 
-	//bottom
+	/* WALL 2 */
 	obj_ptr = new Object;
 	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
-	obj_ptr->translateObject(m_view_width * 0.5f, 10, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(m_view_width, 12, 100);	
+	
+	//TOP
+	obj_ptr->translateObject(m_view_width * 0.5f, 1500, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(1800, 6, 100);
+
 	elementObject.push_back(obj_ptr);
 
-	//left
+
+	/* WALL 3 */
 	obj_ptr = new Object;
 	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
-	obj_ptr->translateObject(10, m_view_height * 0.5f, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(12, m_view_height, 100);	
+	
+	//LEFT
+	obj_ptr->translateObject(400, 950, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(6, 1200, 100);	
+
 	elementObject.push_back(obj_ptr);
 
-	//right
+
+	/* WALL 4 */
 	obj_ptr = new Object;
 	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
-	obj_ptr->translateObject(2390, m_view_height * 0.5f, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(12, m_view_height, 100);	
+	
+	//BOTTOM
+	obj_ptr->translateObject(m_view_width * 0.5f, 400, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(1800, 6, 100);	
+
+	elementObject.push_back(obj_ptr);
+
+	/* WALL 5 */
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_GREEN], NULL, false, false);
+
+	//BOTTOM
+	obj_ptr->translateObject(396.40192, 1222.2026, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(130, 170, 50);	
+
+	elementObject.push_back(obj_ptr);
+
+
+	/* WALL 6 */
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	
+	obj_ptr->translateObject(800, 800, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(50, 50, 100);	
+
+	elementObject.push_back(obj_ptr);
+
+
+	/* WALL 7 */
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_BACK], NULL, false, false);
+	
+	obj_ptr->translateObject(800, 800, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(50, 50, 100);	
+
 	elementObject.push_back(obj_ptr);
 }
 
@@ -106,10 +150,30 @@ void Model_Gameplay::Update(double dt, bool* myKeys)
 	Model::Update(dt, myKeys);
 
 	/* Update Ammo */
-	Weapon::UpdateAmmos(elementObject);
+	//Weapon::UpdateAmmos(elementObject);
 
+
+	/* Update test wall */
+	if( myKeys[ARROW_UP] )
+		elementObject[4]->translateObject(0, 300 * dt, 0);
+
+	if( myKeys[ARROW_DOWN] )
+		elementObject[4]->translateObject(0, -300 * dt, 0);
+
+	if( myKeys[ARROW_LEFT] )
+		elementObject[4]->translateObject(-300 * dt, 0, 0);
+
+	if( myKeys[ARROW_RIGHT] )
+		elementObject[4]->translateObject(300 * dt, 0, 0);
+
+	elementObject[4]->collideBox.position = elementObject[4]->position;
+
+	//cout << "Pos: " << elementObject[4]->position << endl;
 	/* Update player */
 	player.Update(dt, myKeys, elementObject);
+
+	/* Update */
+	elementObject[6]->translate(Collision2::noSlidePos);
 }
 
 void Model_Gameplay::Exit()

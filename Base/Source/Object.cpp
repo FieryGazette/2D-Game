@@ -59,7 +59,7 @@ void Object::Init()
 	}
 
 	/* OP bound box */
-	collideBox.Set(position, scale, Collision::BOX);
+	collideBox.Set(position, scale, Collision2::BOX);
 }
 
 
@@ -194,7 +194,7 @@ void Object::StartChecking(const Vector3& velocity)
 bool Object::checkCollision2(Object& checkMe)
 {
 	bool b = false;
-	b = Collision::CheckCollision(this->collideBox, checkMe.collideBox);
+	b = Collision2::CheckCollision(this->collideBox, checkMe.collideBox);
 
 	if(!collided)
 		collided = b;
@@ -212,7 +212,7 @@ void Object::Response(const Vector3& vel)
 /*** getters ***/
 Mesh* Object::getMesh(){return mesh;}
 Vector3 Object::getScale(){return scale;}
-Collision* Object::getBbox(){return &collideBox;}
+Collision2* Object::getBbox(){return &collideBox;}
 Vector3 Object::getPosition(){return position;}
 Object* Object::getParent(){return parent;}
 Mtx44* Object::getTRS(){return &TRS;}
