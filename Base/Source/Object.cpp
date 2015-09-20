@@ -206,7 +206,8 @@ void Object::Response(const Vector3& vel)
 {
 	/* 2D response: nvr check for Z */
 	//this->collideBox.position = this->collideBox.previousPos + finalVel;
-	translate(this->collideBox.position);
+	//cout << this->collideBox.position + this->collideBox.scale * 0.5f << endl;
+	translate(this->collideBox.position + this->collideBox.scale * 0.5f);
 }
 
 /*** getters ***/

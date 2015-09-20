@@ -11,12 +11,23 @@ Player::~Player()
 /* Core */
 void Player::Init(Vector3 pos, Vector3 scale, DIRECTION facingDir, float health, float staminia, float speed)
 {
+	/* Weapon */
 	weapon.Init(Weapon::PISTOL);
 
-	Set("character", Geometry::meshList[Geometry::GEO_CUBE_RED], NULL, false, false);
-	translateObject(pos);	//start at right side of box (going top left initially)
-	scaleObject(scale.x, scale.y, scale.z);
+	/* Mesh */
+	//sprite animation
+	sprite = MeshBuilder::GenerateSpriteAnimation("zombie", 8, 8, 1);
+	sprite->textureID[0] = LoadTGA("Image//boxhead_zombie.tga");
 
+	//start col, start row, end col, end row
+	sprite->init(0.1f, 0, 4, 7, 4, false);
+
+	/* Character */
+	object.Set("character", sprite, NULL, false, false);
+	object.translateObject(pos);	//start at right side of box (going top left initially)
+	object.scaleObject(scale.x, scale.y, scale.z);
+
+	/* Stats */
 	this->health = health;
 	this->staminia = staminia;
 	this->speed = speed;
@@ -30,6 +41,9 @@ int countchange = 0;
 bool dirc = true;
 void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 {
+	/* Character update */
+	Character::Update(dt);
+
 	/* Controls */
 
 	//dir
@@ -76,7 +90,7 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	//	myKeys[BACKWARD] = myKeys[RIGHT] = true;
 	//	break;
 	//}
-	
+	//
 	
 	vel.SetZero();
 	if( myKeys[FORWARD] ) 
@@ -95,12 +109,6 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	{
 		vel.x += speed;
 	}
-	
-	/* Shoot weapon */
-	//Vector3 dir(0, 1, 0);
-	//Vector3 pos = position;
-	//pos.y += scale.y * 0.5f;
-	//weapon.Update(dt, pos, dir, myKeys[RELOAD]);
 
 	/* Movement and collision check */
 	vel *= dt;
@@ -108,25 +116,26 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	vel.Set(-500, 500, 0);*/
 	//cout << "Vel: " << vel << endl;
 	/* Set up collision */
-	StartChecking(vel);
+	object.StartChecking(vel);
 
-	for(int i = 0; i < objectLists.size() - 3; ++i)
+	for(int i = 0; i < objectLists.size(); ++i)
 	{
-		if(this != objectLists[i])
+		if(&object != objectLists[i])
 		{
 			if(objectLists[i]->active)
-				checkCollision2(*objectLists[i]);
+				object.checkCollision2(*objectLists[i]);
 		}
 	}
 
 	/* Reset */
-	collideBox.Reset();
+	object.collideBox.Reset();
 
 	/* collision response */
-	Response(vel);
-}
+	object.Response(vel);
 
-Mesh* Player::getMesh()
-{
-	return Object::mesh;
+	/* Shoot weapon */
+	Vector3 dir(0, 1, 0);
+	Vector3 pos = object.position;
+	pos.y += object.scale.y * 2;
+	weapon.Update(dt, pos, dir, myKeys[RELOAD]);
 }

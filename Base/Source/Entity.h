@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 #include "Object.h"
-#include "Collision.h"
+#include "Collision2.h"
 
 /*******************************************************/
 /*
@@ -25,7 +25,7 @@ protected:
 	int totalObjects;
 	
 	/* Collison bound */
-	Collision* collisionList;
+	Collision2* collisionList;
 	int totalBounds;
 
 	/* Basic info */

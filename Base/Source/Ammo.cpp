@@ -29,13 +29,21 @@ void Ammo::Init(AMMO_TYPE type)
 	Set("Bullet", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
 	translateObject(0, 0, 2);	//z is higer than many other stuff
 	scaleObject(50, 50, 50);
-
+	collide = false;
 	active = false;
 }
 
 //pass in the relavant info variables and they will be updated
 void Ammo::Update(vector<Object*>& objectList)
 {
+	/* If collides */
+	if( collide )
+	{
+		//response: zombie loses hp...
+		//collidedObject.hitResponse()
+		setActive(false);
+	}
+
 	/* Check collision */
 	StartChecking(vel);
 
@@ -43,7 +51,7 @@ void Ammo::Update(vector<Object*>& objectList)
 	collide = false;
 	for(int i = 0; i < objectList.size(); ++i)
 	{
-		if( this == objectList[i] )
+		if( this == objectList[i] || !objectList[i]->active )
 			continue;
 
 		if( checkCollision2(*objectList[i]) )	//hit something
@@ -59,14 +67,6 @@ void Ammo::Update(vector<Object*>& objectList)
 
 	/* collision response */
 	Response(vel);
-
-	/* If collides */
-	if( collide )
-	{
-		//response: zombie loses hp...
-		//collidedObject.hitResponse()
-		//setActive(false);
-	}
 }
 
 void Ammo::Activate(const Vector3& pos, const Vector3& dir)

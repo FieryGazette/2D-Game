@@ -39,7 +39,7 @@ Ammo* Weapon::FetchAmmo()
 
  void Weapon::InitAmmo(vector<Object*>& objectList)
  {
-	 ammoList.resize(100);
+	 ammoList.resize(50);
 
 	 for(int i = 0; i < ammoList.size(); ++i)
 	 {
@@ -59,10 +59,9 @@ bool Weapon::Update(double dt, const Vector3& currentPos, Vector3& direction, bo
 		/* If fire */
 		if( fireWeapon )
 		{
-
-			Ammo* ammo_ptr = NULL;
 			if( ammo > 0 )
 			{
+				Ammo* ammo_ptr = NULL;
 				fireTimer = 0.0;
 
 				ammo_ptr = FetchAmmo();

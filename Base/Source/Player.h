@@ -47,7 +47,6 @@ public:
 	/* Core */
 	void Init(Vector3 pos, Vector3 scale, DIRECTION facingDir, float health, float staminia, float speed);
 	void Update(double dt, bool* myKeys, vector<Object*>& objectLists);
-	Mesh* getMesh();
 };
 
 #endif

@@ -2,6 +2,8 @@
 #define SPRITEANIMATION_H
 #include "Mesh.h"
 #include "Vector2.h"
+#include <string>
+using std::string;
 
 /*** store animation info ***/
 //struct Animation
@@ -46,6 +48,13 @@ public:
 	int m_currentRow;		//keep track of current row
 	int m_currentCol;	//keep track of current col
 	int m_totalFrame;		//store total frame
+};
+
+struct SpriteData
+{
+	string name;
+	int startRow, startCol;
+	int endRow, endCol;
 };
 
 #endif

@@ -34,7 +34,7 @@ void SpriteAnimation::init(float time, int startCol, int startRow, int endCol, i
 	totalCol += endCol;
 
 	m_totalFrame = totalCol + totalRow;
-	m_frameTime = time / m_totalFrame;
+	m_frameTime = time;
 
 	/* set current row and column */
 	if(!this->oppDir)	//if normal dir: start from start

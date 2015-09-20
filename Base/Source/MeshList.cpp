@@ -1,10 +1,4 @@
 #include "MeshList.h"
-#include "GL\glew.h"
-#include "shader.hpp"
-#include "Utility.h"
-#include "LoadOBJ.h"
-#include "LoadHmap.h"
-#include "LoadTGA.h"
 
 Mesh* Geometry::meshList[NUM_GEOMETRY];
 vector<SpriteAnimation*> Geometry::animation;

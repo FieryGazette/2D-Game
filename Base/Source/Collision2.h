@@ -39,15 +39,6 @@ struct Movement_3d
 class Collision2
 {
 public:
-	enum DIRECTION
-	{
-		TOP_LEFT,
-		BOTTOM_LEFT,
-		TOP_RIGHT,
-		BOTTOM_RIGHT,
-		STATIONARY,
-	};
-
 	enum TYPE
 	{
 		BOX,
@@ -98,7 +89,6 @@ public:
 
 	/* aabb variables */
 	Vector3 previousPos;
-	DIRECTION direction;
 
 	bool collideX, collideY;
 	static Vector3 noSlidePos;

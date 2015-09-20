@@ -3,6 +3,12 @@
 #include "Mesh.h"
 #include "MeshBuilder.h"
 #include "DepthFBO.h"
+#include "GL\glew.h"
+#include "shader.hpp"
+#include "Utility.h"
+#include "LoadOBJ.h"
+#include "LoadHmap.h"
+#include "LoadTGA.h"
 #include <vector>
 using std::vector;
 

@@ -2,13 +2,14 @@
 #define CHARACTER_H
 #include "Object.h"
 #include "Weapon.h"
+#include "SpriteAnimation.h"
 
 /*******************************************************/
 /*
 Character class for all living things. Only for 2D.
 */
 /*******************************************************/
-class Character : public Object
+class Character
 {
 public:
 	/* Character can only go 8 diff. directions */
@@ -31,13 +32,25 @@ public:
 
 	/* Core */
 	void Init(Vector3 pos, Vector3 scale, DIRECTION facingDir);
+	void Update(double dt);
 
 	/* Getter/Setter */
 	Vector3 getPosition();
 	Vector3 getScale();
-
+	Mesh* getMesh();
+	Object* getObject();
 protected:
+	/* Physical */
+	Object object;
+
+	/* Directions */
 	DIRECTION facingDir;
+
+	/* Sprite */
+	SpriteAnimation* sprite;
+	SpriteData directionSprites[TOTAL_DIRECTIONS];
+
+	/* Physics */
 	Vector3 vel;
 };
 
