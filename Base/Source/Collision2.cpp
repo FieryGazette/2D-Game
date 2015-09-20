@@ -32,9 +32,8 @@ Collision2::Collision2()
 /* Init */
 void Collision2::Set(Vector3 pos, Vector3 scale, TYPE type)
 {
-	/* Pos is bottom left side */
-	position = pos - scale * 0.5f;
-	previousPos = pos - scale * 0.5f;
+	position = pos;
+	previousPos = pos;
 	this->scale = scale;
 	this->type = type;
 	collideX = collideY = false;
@@ -50,8 +49,8 @@ void Collision2::Start(const Vector3& objectPos, const Vector3& velocity)
 		lastCollided = NULL;
 		originalVel = velocity;
 
-		originalPos = previousPos = objectPos - scale * 0.5f;
-		noCollisionPos = position = (objectPos + velocity) - scale * 0.5f;
+		originalPos = previousPos = objectPos;
+		noCollisionPos = position = objectPos + velocity;
 		
 		/* set all collide flags to false */
 		collideX = collideY = false;
@@ -238,6 +237,11 @@ void Collision2::Reset()
 	//cout <<"X: " << collideX << "  Y: " << collideY << endl;
 	previousPos = position;	//set starting pos to current pos
 
+	//if( isEqual(previousPos, noCollisionPos) )
+	//{
+	//	return;
+	//}
+
 	/* Slide check */
 	if( !collideX )	//if not collided X, can go all the way
 	{
@@ -253,7 +257,13 @@ void Collision2::Reset()
 
 	/* RESET tangent and direction */
 	SetTangentAndDir(originalVel);	//only do this after previousPos and position done properly
-	
+	//b = true;
+	//if( direction == STATIONARY)
+	//{
+	//	return;
+	//}
+	//
+	/* check through if collide with any other boxes in original broadphrase */
 	for(int i = 0; i < slideList.size(); ++i)
 	{
 		if(slideList[i] != lastCollided)
@@ -276,17 +286,27 @@ bool Collision2::isEqual(Vector3& a, Vector3 & b)
 		(a.z >= b.z - Math::EPSILON && a.z <= b.z + Math::EPSILON);
 }
 
+Vector3 checkScale_Half;
+Vector3 currentScale_Half;
 bool Collision2::CheckAndResponse(Collision2* current, Collision2* check)
 {
 	/* holding variable to store current position (So actual position not modified during checking) */
 	currentPos = current->position;	
+	
+	/* Half scale */
+	checkScale_Half = check->scale * 0.5f;
+	currentScale_Half = current->scale * 0.5f;
 
 	/* update start and end */
-	currentEnd = currentPos + current->scale;
-	previousEnd = current->previousPos + current->scale;
+	currentStart = currentPos - currentScale_Half;
+	currentEnd = currentPos + currentScale_Half;
+
+	previousStart = current->previousPos - currentScale_Half;
+	previousEnd = current->previousPos + currentScale_Half;
 
 	/** checkBox start and end **/
-	checkEnd = check->position + check->scale;	//set end for box1
+	checkStart = check->position - checkScale_Half;	//set start for box1
+	checkEnd = check->position + checkScale_Half;	//set end for box1
 
 	/************************************ Check Collision2 ************************************/
 	/** Test 1: check if collide at X side  **/
@@ -297,18 +317,19 @@ bool Collision2::CheckAndResponse(Collision2* current, Collision2* check)
 	{
 		if(originalVel.x > 0.f)	//if right side
 		{
-			contactX = check->position.x - current->scale.x - offset;
+			contactX = check->position.x - (checkScale_Half.x + currentScale_Half.x) - offset;
 		}
 		else
 		{
-			contactX = check->position.x + check->scale.x + offset;
+			contactX = check->position.x + (checkScale_Half.x + currentScale_Half.x) + offset;
 		}
 
 		SetToXPos(tangent, contactX, currentPos);	//translate to touch X side
-		currentEnd = currentPos + current->scale;	//set end for current
+		currentStart = currentPos - currentScale_Half;	//set start for current
+		currentEnd = currentPos + currentScale_Half;	//set end for current
 
 		/** once X side is touched, check if y range intersects (current.y intersects check.y) **/
-		if(currentEnd.y > check->position.y && current->position.y < checkEnd.y)
+		if(currentEnd.y > checkStart.y && currentStart.y < checkEnd.y)
 		{
 			current->collideX = current->collideY = false;
 			current->position = currentPos;
@@ -323,26 +344,26 @@ bool Collision2::CheckAndResponse(Collision2* current, Collision2* check)
 		/* translate to just touching top of check box */
 		if(originalVel.y > 0.f)	//if right side
 		{
-			yOffset = -(current->scale.y + offset);
+			yOffset = -(checkScale_Half.y + currentScale_Half.y + offset);
 		}
 		else
 		{
-			yOffset = (check->scale.y + offset);
+			yOffset = (checkScale_Half.y + currentScale_Half.y + offset);
 		}
 
 		/* contact point Y */
 		contactY = check->position.y + yOffset;
 
 		SetToYPos(tangent, contactY, currentPos);
-		currentEnd = currentPos + current->scale;	//set end for current
+		currentStart = currentPos - currentScale_Half;	//set start for current
+		currentEnd = currentPos + currentScale_Half;	//set end for current
 
 		/* translate start and end Y in opp dir of Contact Point Y to see if they intersect */
-		currentStart = currentPos;
 		currentStart.y -= yOffset;
 		currentEnd.y -= yOffset;
 
 		/* check if collide (X and Y) */
-		if(checkAABBCollide(currentStart, currentEnd, check->position, checkEnd))
+		if(checkAABBCollide(currentStart, currentEnd, checkStart, checkEnd))
 		{
 			current->collideX = current->collideY = false;
 			current->position = currentPos;
@@ -369,41 +390,41 @@ bool Collision2::broadPhrase(Vector3& originalPos, Vector3& finalPos, Vector3& c
 	//x
 	if(length > 0)
 	{
-		startZone.x = originalPos.x;
-		endZone.x = finalPos.x + currentScale.x;
+		startZone.x = originalPos.x - currentScale.x * 0.5f;
+		endZone.x = finalPos.x + currentScale.x * 0.5f;
 	}
 	else
 	{
-		startZone.x = finalPos.x;
-		endZone.x = originalPos.x + currentScale.x;
+		startZone.x = finalPos.x - currentScale.x * 0.5f;
+		endZone.x = originalPos.x + currentScale.x * 0.5f;
 	}
 
 	//y
 	if(height > 0)
 	{
-		startZone.y = originalPos.y;
-		endZone.y = finalPos.y + currentScale.y;
+		startZone.y = originalPos.y - currentScale.y * 0.5f;
+		endZone.y = finalPos.y + currentScale.y * 0.5f;
 	}
 	else
 	{
-		startZone.y = finalPos.y;
-		endZone.y = originalPos.y + currentScale.y;
+		startZone.y = finalPos.y - currentScale.y * 0.5f;
+		endZone.y = originalPos.y + currentScale.y * 0.5f;
 	}
 
 	//z
 	if(width > 0)
 	{
-		startZone.y = originalPos.y;
-		endZone.y = finalPos.y + currentScale.y;
+		startZone.z = originalPos.z - currentScale.z * 0.5f;
+		endZone.z = finalPos.z + currentScale.z * 0.5f;
 	}
 	else
 	{
-		startZone.z = finalPos.z;
-		endZone.z = originalPos.z + currentScale.z;
+		startZone.z = finalPos.z - currentScale.z * 0.5f;
+		endZone.z = originalPos.z + currentScale.z * 0.5f;
 	}
 
-	checkStart = checkPos;
-	checkEnd = checkPos + checkScale;
+	checkStart = checkPos - checkScale * 0.5f;
+	checkEnd = checkPos + checkScale * 0.5f;
 	
 	/** Check if in X-Y of broad phrase **/
 	if(!checkAABBCollide(startZone, endZone, checkStart, checkEnd))	//if checkBox not in start-end zone

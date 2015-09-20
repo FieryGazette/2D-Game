@@ -33,9 +33,9 @@ void Player::Init(Vector3 pos, Vector3 scale, DIRECTION facingDir, float health,
 	this->speed = speed;
 }
 
-double changeRate = 0.01;
+double changeRate = 0.08;
 double timer = changeRate;
-double changeDirRate = 0.3;
+double changeDirRate = 1.3;
 double changeDirTimer = changeDirRate;
 int countchange = 0;
 bool dirc = true;
@@ -73,24 +73,24 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 			countchange = 3;
 	}
 	
-	//myKeys[FORWARD] = myKeys[BACKWARD] = myKeys[LEFT] = myKeys[RIGHT] = false;
+	myKeys[FORWARD] = myKeys[BACKWARD] = myKeys[LEFT] = myKeys[RIGHT] = false;
 
-	//switch( countchange )
-	//{
-	//case 0:	//top right
-	//	myKeys[FORWARD] = myKeys[RIGHT] = true;
-	//	break;
-	//case 1:	//top left
-	//	myKeys[FORWARD] = myKeys[LEFT] = true;
-	//	break;
-	//case 2:	//bottom left
-	//	myKeys[BACKWARD] = myKeys[LEFT] = true;
-	//	break;
-	//case 3:	//bottom right
-	//	myKeys[BACKWARD] = myKeys[RIGHT] = true;
-	//	break;
-	//}
-	//
+	switch( countchange )
+	{
+	case 0:	//top right
+		myKeys[FORWARD] = myKeys[RIGHT] = true;
+		break;
+	case 1:	//top left
+		myKeys[FORWARD] = myKeys[LEFT] = true;
+		break;
+	case 2:	//bottom left
+		myKeys[BACKWARD] = myKeys[LEFT] = true;
+		break;
+	case 3:	//bottom right
+		myKeys[BACKWARD] = myKeys[RIGHT] = true;
+		break;
+	}
+	
 	
 	vel.SetZero();
 	if( myKeys[FORWARD] ) 

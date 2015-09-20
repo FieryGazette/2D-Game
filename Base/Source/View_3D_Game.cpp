@@ -39,7 +39,7 @@ void View_3D_Game::RenderCollideBox()
 			continue;
 
 		modelStack.PushMatrix();
-		Vector3 pos = o->getBbox()->position + o->getBbox()->scale * 0.5f;
+		Vector3 pos = o->getBbox()->position;
 		modelStack.Translate(pos.x, pos.y, pos.z);
 		modelStack.Scale(o->getBbox()->scale.x, o->getBbox()->scale.y, o->getBbox()->scale.z);
 		RenderMesh(Geometry::meshList[Geometry::GEO_DEBUG_CUBE], false);
