@@ -14,7 +14,7 @@ public:
 		SLANTED_BOX,
 	};
 
-	/************************************************* Core *************************************************/
+	/* Core */
 	//initialize
 	void Set(Vector3 pos, Vector3 scale, TYPE type);
 
@@ -22,7 +22,6 @@ public:
 	void Start(const Vector3& objectPos, const Vector3& velocity);	//before checking must set up
 	void Reset();
 
-	/************************************************* Collision Functions *************************************************/
 	/* Check if collide: */
 	//pass in current object's collide box and collide box of object being compared
 	static bool CheckCollision(Collision& current, Collision& check);
@@ -42,7 +41,7 @@ public:
 		static bool SphereToBox(Collision* current, Collision* check);
 
 		/* Box To Box Swept AABB method */
-		static bool BoxToBox(Collision* current, Collision* check);
+		static bool SlideResponse(Collision* current, Collision* check);
 			static float SweptAABB(Collision& current, Collision& check);
 
 	/* Collision response */
@@ -51,47 +50,51 @@ public:
 	~Collision();
 
 
-	/************************************************* Data Members *************************************************/
 	TYPE type;
 
 	/* Variables for all collision type */
 	Vector3 position;	//bottom left
 	Vector3 scale;	//if is Sphere, scale.set(radius, radius, radius);
+
+	static Vector3 normal;	//swept AABB (If not using, remove)
+
+	//!! optimise so not using vel and normal, just one variable (or better, none)
 	Vector3 vel;
 
 private:
-
-	/*********************************************** Temp. Storage *********************************************/
+	/*** Temporary storage variables ***/
 	/* AABB Collision */
 	static Vector3 startingPos;	//startingPos
 	static Vector3 currentStart;	//current collide bound
 	static Vector3 currentEnd;
-	static Vector3 normal;	//swept AABB (If not using, remove)
+	static Vector3 previousStart;	//current collide bound @ previous frame 
+	static Vector3 previousEnd;
+
 	static Vector3 currentPos;	//current position
 
 	/* Broad phrasing */
 	static Vector3 startZone, endZone;	//for broad phrasing (or whatever its called)
 	static Vector3 checkStart, checkEnd;	//start and end for box
 
-	/* Timing */
+	static float offset;	//cannot be 0 (or will considered collision even if touching)
+
+	static Vector3 slideDist;	//slide dist for sliding AABB
+
 	static float remainingTime;
 
-	/* Sliding */
 	static vector<Collision*> slideList;
 	static vector<Collision*>::iterator it;
-	static Collision* collided_Box;	//box that is being collided, do not check again
-	static Vector3 originalVel;
-	static Vector3 originalPos;
+	static Collision* collided_Box;
 
-	/* Misc */
-	static float offset;	//cannot be 0 (or will considered collision even if touching)
 	static bool xc, yc, zc;
 
 	/** internal functions please ignore (DO NOT CALL FROM OUTSIDE CLASS) **/
 	/* AABB Collision */
-	static bool broadPhrase(Vector3& originalPos, Vector3& finalPos, Vector3& checkPos, Vector3& currentScale, Vector3& checkScale);
+	static bool broadPhrase(Vector3 originalPos, Vector3 finalPos, Vector3 checkPos, Vector3 currentScale, Vector3 checkScale);
 	static bool inZone(float start, float end, float checkStart, float checkEnd);
 	static bool checkAABBCollide(Vector3& currentStart, Vector3& currentEnd, Vector3& checkStart, Vector3& checkEnd);
+	static bool checkSideCollide(Vector3& currentStart, Vector3& currentEnd, Vector3& checkStart, Vector3& checkEnd, bool x, bool y, bool z);
+	bool checkSlide(Vector3& normal);
 	void ResetAABB();
 
 	static bool CheckAndResponse(bool x, bool y, bool z, Collision& current, vector<Collision*>& checkList);

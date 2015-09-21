@@ -3,7 +3,7 @@
 
 #include "Mesh.h"
 #include "Mtx44.h"
-#include "Collision2.h"
+#include "Collision.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -35,7 +35,7 @@ public:
 	bool active;	//active?
 
 	/*** NON-modifyable data ***/
-	Collision2 collideBox;	//collision box
+	Collision collideBox;	//collision box
 	bool collided;
 	Mtx44 TRS;
 public:
@@ -74,7 +74,7 @@ public:
 	Vector3 getScale();
 	Vector3 getPosition();
 	Object* getParent();
-	Collision2* getBbox();
+	Collision* getBbox();
 	Mtx44* getTRS();
 	bool getLight();
 	void setActive(bool b);

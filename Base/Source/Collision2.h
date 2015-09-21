@@ -92,6 +92,7 @@ public:
 
 	bool collideX, collideY;
 	static Vector3 noSlidePos;
+	static Vector3 originalVel;
 private:
 
 	/* Tangent and Direction */

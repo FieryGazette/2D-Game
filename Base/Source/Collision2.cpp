@@ -19,7 +19,7 @@ vector<Collision2*> Collision2::slideList;
 Vector3 Collision2::originalPos;	//original initial pos
 Vector3 Collision2::noCollisionPos;	//final pos if no collision
 Collision2* lastCollided;
-Vector3 originalVel;
+Vector3 Collision2::originalVel;
 bool gg = false;
 bool y = false;
 Vector3 Collision2::noSlidePos;

@@ -48,7 +48,7 @@ void Model_Gameplay::Init()
 	//player
 	//!! COLLISION BUG: IF SCALE IS 50 BY 50 AND WALL IS EXACTLY 12 SCALE THICK, WILL GO THRU
 	//WARNING: DO NOT GO BEYOND 1000 speed since sweep AABB bug not solved yet
-	player.Init(Vector3(800, 800, 1), Vector3(150, 150, 1), Character::E, 100, 100, 500000000);
+	player.Init(Vector3(800, 800, 1), Vector3(150, 150, 1), Character::E, 100, 100, 100000);
 	elementObject.push_back(player.getObject());
 
 	/* Init all game objects */
