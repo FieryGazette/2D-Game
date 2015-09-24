@@ -26,6 +26,13 @@ void Model_Level_Editor::EditNewMap(Map& mapToEdit, vector<string>* tileMapList)
 
 void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3 cursorPos)
 {
+	/* Switch state */
+	if( myKeys[AIM] )
+	{
+		switchState = true;
+		currentState = IN_GAME;
+	}
+
 	/* If hit and click layer option, current layer selected */
 
 	/* If hit and click checkbox beside layer option, layer turn invisible/not visible */
@@ -39,6 +46,8 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3 cursorPos)
 	/* Left click == add tile */
 
 	/* Right click == remove the tile */
+
+
 
 }
 

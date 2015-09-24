@@ -8,18 +8,6 @@
 
 class Controller_3D_Game : public Controller
 {
-	/********************** states **********************/
-	//each state is 1 model
-	enum STATES
-	{
-		MAIN_MENU,
-		IN_GAME,
-		EDIT_LEVEL,
-		TOTAL_STATES,
-	};
-
-	STATES currentState, previousState;	//current state: current frame state, previous state: previous frame state
-
 /********************** Models **********************/
 	Model_Gameplay* Gameplay; 
 	Model_Level_Editor* Level_Editor;

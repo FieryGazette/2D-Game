@@ -101,11 +101,11 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	vel.SetZero();
 	if( myKeys[FORWARD] ) 
 	{
-		vel.y += speed * 5.f;
+		vel.y += speed;
 	}
 	if( myKeys[BACKWARD] )
 	{
-		vel.y -= speed * 5.f;
+		vel.y -= speed;
 	}
 	if( myKeys[LEFT] )
 	{

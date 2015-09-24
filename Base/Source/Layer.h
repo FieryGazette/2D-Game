@@ -32,6 +32,7 @@ private:
 	int layer;	//what layer is it
 	int tileSize;	//tile size for this layer
 	bool collidable;	//can collide or not
+	bool edited;	//is it edited?
 
 	/* Tile stuff */
 	vector<Tile*> TileMap;

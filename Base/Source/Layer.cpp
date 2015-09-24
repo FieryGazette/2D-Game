@@ -3,6 +3,7 @@
 /* Constructor/destructor */
 Layer::Layer()
 {
+	edited = false;
 }
 
 Layer::Layer(const char* filepath)

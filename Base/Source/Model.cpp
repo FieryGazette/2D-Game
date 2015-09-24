@@ -4,6 +4,8 @@
 Camera Model::camera;
 float Model::fovAngle;	//this angle is used for fov
 bool Model::InitAlready = false;
+bool Model::switchState = false;
+Model::STATES Model::currentState = IN_GAME;
 
 /*********** constructor/destructor ***************/
 Model::Model()
@@ -103,4 +105,19 @@ vector<Object*>* Model::getObject(){return &elementObject;}
 Object* Model::getObject(int index)
 {
 	return elementObject[index];
+}
+
+bool Model::getSwitchState()
+{
+	return switchState;
+}
+
+void Model::SetSwitchState(bool b)
+{
+	switchState = b;
+}
+
+Model::STATES Model::getCurrentState()
+{
+	return currentState;
 }

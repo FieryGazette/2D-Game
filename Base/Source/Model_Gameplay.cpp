@@ -48,7 +48,7 @@ void Model_Gameplay::Init()
 	//player
 	//!! COLLISION BUG: IF SCALE IS 50 BY 50 , WILL GO THRU
 	//WARNING: DO NOT GO BEYOND 1000 speed since sweep AABB bug not solved yet
-	player.Init(Vector3(800, 800, 1), Vector3(30, 70, 1), Character::E, 100, 100, 350);
+	player.Init(Vector3(800, 800, 1), Vector3(230, 230, 1), Character::E, 100, 100, 350);
 	elementObject.push_back(player.getObject());
 
 	/* Init all game objects */
@@ -136,6 +136,13 @@ void Model_Gameplay::InitObject()
 
 void Model_Gameplay::Update(double dt, bool* myKeys, Vector3 cursorPos)
 {
+	/* Switch state */
+	if( myKeys[SHOOT] )
+	{
+		switchState = true;
+		currentState = EDIT_LEVEL;
+	}
+
 	/* model update */
 	Model::Update(dt, myKeys, cursorPos);
 

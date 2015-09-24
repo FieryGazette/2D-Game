@@ -15,6 +15,18 @@ using namespace std;
 
 class Model
 {
+public:
+
+	/********************** states **********************/
+	//each state is 1 model
+	enum STATES
+	{
+		MAIN_MENU,
+		IN_GAME,
+		EDIT_LEVEL,
+		TOTAL_STATES,
+	};
+
 protected:
 /********************** View size *****************************/
 	unsigned short m_view_width;	//camera view size X
@@ -38,7 +50,12 @@ protected:
 
 	/************ Flags ************/ 
 	static bool InitAlready;
+
+	/*** Switch state? ***/
+	static bool switchState;
+	static STATES currentState;
 public:
+
 	/*********** constructor/destructor ***************/
 	Model();
 	virtual ~Model();
@@ -64,6 +81,9 @@ public:
 	Object* getObject(int index);
 	unsigned short getViewWidth();
 	unsigned short getViewHeight();
+	static bool getSwitchState();
+	static STATES getCurrentState();
+	static void SetSwitchState(bool b);
 	Vector3 getWorldDimension();
 };
 

@@ -61,9 +61,6 @@ void Controller_3D_Game::Init()
 
 	//call last since view and model needed to be initialized first
 	Controller::Init();
-
-	//states
-	previousState = currentState = MAIN_MENU;
 }
 
 void Controller_3D_Game::InitControls()
@@ -135,9 +132,6 @@ void Controller_3D_Game::Run()
 			/** model update **/
 			currentModel->Update(m_dElapsedTime, myKeys, cursorPos);
 
-			/** States **/
-			previousState = currentState;
-
 			m_dAccumulatedTime_thread1 = 0.0;
 		}
 		if(m_dAccumulatedTime_thread2 > 0.003)	//render: render fps is _dAccumulatedTime_thread1 > fps
@@ -161,8 +155,28 @@ void Controller_3D_Game::Run()
 void Controller_3D_Game::SwitchModels()
 {
 	/** Switch models based on states **/
-	if( currentState == previousState )
+	if( !Model::getSwitchState() )
 		return;
+
+	switch( Model::getCurrentState() )
+	{
+	case Model::IN_GAME:
+		currentModel = Gameplay;
+		currentView = view_3D_Game;
+		currentView->SetModel(currentModel);	//need set model since edit and game use same view
+		break;
+	case Model::EDIT_LEVEL:
+		currentModel = Level_Editor;
+		currentView = view_3D_Game;
+		currentView->SetModel(currentModel);
+		break;
+	case Model::MAIN_MENU:
+		currentModel = mainMenu;
+		currentView = view_MainMenu;
+		break;
+	}
+
+	Model::SetSwitchState(false);
 }
 
 void Controller_3D_Game::UpdateKeys()
