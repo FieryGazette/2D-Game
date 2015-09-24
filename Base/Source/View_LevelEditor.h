@@ -1,5 +1,5 @@
-#ifndef VIEW_3D_GAME_H
-#define VIEW_3D_GAME_H
+#ifndef VIEW_LEVEL_EDITOR_H
+#define VIEW_LEVEL_EDITOR_H
 #include "View.h"
 
 //Include GLEW
@@ -11,15 +11,15 @@
 /**
  Everything in view class will be using Objects class for TRS and other info
  **/
-class View_3D_Game : public View
+class View_Level_Editor : public View
 {
 /********************** model and view ptr **********************/
-	Model_Gameplay* model;
+	Model_Level_Editor* model;
 public:
 /********************** constructor/destructor *****************************/
-	View_3D_Game();
-	View_3D_Game(Model_Gameplay* model, unsigned short console_width, unsigned short console_height, MODE mode);
-	~View_3D_Game();
+	View_Level_Editor();
+	View_Level_Editor(Model_Level_Editor* model, unsigned short console_width, unsigned short console_height, MODE mode);
+	~View_Level_Editor();
 
 /********************** Core functions *****************************/
 	virtual void Init();
@@ -32,7 +32,7 @@ public:
 	void RenderHUD();
 
 /**************** Utilites ******************/
-	void SetModel(Model_Gameplay* model);
+	void SetModel(Model_Level_Editor* model);
 };
 
 #endif

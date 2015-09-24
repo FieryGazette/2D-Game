@@ -1,6 +1,9 @@
 #ifndef VIEW_H
 #define VIEW_H
-#include "Model.h"
+/* Model */
+#include "Model_Gameplay.h"
+#include "Model_Level_Editor.h"
+#include "Model_MainMenu.h"
 
 //Include GLEW
 #include <GL/glew.h>
@@ -157,6 +160,9 @@ protected:
 
 /********************** text **********************/
 	static float FontData[256];
+	
+/********************** Flags **********************/
+	static bool InitAlready;
 };
 
 #endif

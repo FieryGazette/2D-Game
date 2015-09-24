@@ -1,14 +1,13 @@
-#ifndef MODEL_GAMEPLAY_H
-#define MODEL_GAMEPLAY_H
+#ifndef MODEL_MAINMENU_H
+#define MODEL_MAINMENU_H
 #include "Model.h"
 
-class Model_Gameplay : public Model
+class Model_MainMenu : public Model
 {
-	Player player;	//set multiplayer
 public:
 /*********** constructor/destructor ***************/
-	Model_Gameplay();
-	~Model_Gameplay();
+	Model_MainMenu();
+	~Model_MainMenu();
 
 /*********** core functions ***************/
 	virtual void Init();

@@ -22,7 +22,7 @@ protected:
 	Vector3 worldDimension;	//max dimemsion for in-game world (eg. 1000 by 1000 by 1000 world space)
 
 	/************* Camera *****************/
-	static Camera3 camera;
+	static Camera camera;
 	static float fovAngle;	//this angle is used for fov
 
 	/************* Light *****************/
@@ -36,8 +36,8 @@ protected:
 	/************ Game objects ************/ 
 	vector<Object*> elementObject;	//sky, clouds stuff player cannot reach
 
-	static bool InitStatic;	//have we init static stuff already?
-
+	/************ Flags ************/ 
+	static bool InitAlready;
 public:
 	/*********** constructor/destructor ***************/
 	Model();
@@ -47,7 +47,7 @@ public:
 	virtual void Init();
 	void InitMesh();
 
-	virtual void Update(double dt, bool* myKeys);
+	virtual void Update(double dt, bool* myKeys, Vector3 cursorPos);
 	void UpdateOpenGL(double dt, bool* myKeys);
 	void UpdateFOV(double dt, bool* myKeys);
 
@@ -57,7 +57,7 @@ public:
 	/*********** getter / setters ***************/
 	bool getbLightEnabled();
 	float getFOV();
-	Camera3* getCamera();
+	static Camera* getCamera();
 	float getFPS();
 	Position getLightPos(int index);
 	vector<Object*>* getObject();

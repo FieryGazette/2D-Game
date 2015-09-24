@@ -1,4 +1,5 @@
 #include "Player.h"
+int Player::total_players = 1;
 
 Player::Player()
 {
@@ -33,9 +34,14 @@ void Player::Init(Vector3 pos, Vector3 scale, DIRECTION facingDir, float health,
 	this->speed = speed;
 }
 
-double changeRate = 0.01;
+void Player::SetToNewMap(Vector3 pos, Map& currentMap)
+{
+	object.position = pos;
+}
+
+double changeRate = 0.05;
 double timer = changeRate;
-double changeDirRate = 0.02;
+double changeDirRate = 0.2;
 double changeDirTimer = changeDirRate;
 int countchange = 0;
 bool dirc = false;
@@ -90,16 +96,16 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	//	myKeys[BACKWARD] = myKeys[RIGHT] = true;
 	//	break;
 	//}
-	////
+	//
 	
 	vel.SetZero();
 	if( myKeys[FORWARD] ) 
 	{
-		vel.y += speed;
+		vel.y += speed * 5.f;
 	}
 	if( myKeys[BACKWARD] )
 	{
-		vel.y -= speed;
+		vel.y -= speed * 5.f;
 	}
 	if( myKeys[LEFT] )
 	{
@@ -134,8 +140,8 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	object.Response(vel);
 
 	/* Shoot weapon */
-	Vector3 dir(0, 1, 0);
-	Vector3 pos = object.position;
-	pos.y += object.scale.y * 2;
-	weapon.Update(dt, pos, dir, myKeys[RELOAD]);
+	//Vector3 dir(0, 1, 0);
+	//Vector3 pos = object.position;
+	//pos.y += object.scale.y * 2;
+	//weapon.Update(dt, pos, dir, myKeys[RELOAD]);
 }

@@ -62,12 +62,6 @@
     <ClCompile Include="Source\Controller_3D_Game.cpp">
       <Filter>Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Collision.cpp">
-      <Filter>Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Camera3.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Model_Gameplay.cpp">
       <Filter>Model</Filter>
     </ClCompile>
@@ -76,6 +70,45 @@
     </ClCompile>
     <ClCompile Include="Source\Entity.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player.cpp">
+      <Filter>Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Weapon.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ammo.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Map.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Layer.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Collision.cpp">
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tile.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera_2D.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Collision2.cpp">
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Model_Level_Editor.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Model_MainMenu.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\View_MainMenu.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\View_LevelEditor.cpp">
+      <Filter>View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,12 +181,6 @@
     <ClInclude Include="Source\Controller.h">
       <Filter>Controller</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Collision.h">
-      <Filter>Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Camera3.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Model_Gameplay.h">
       <Filter>Model</Filter>
     </ClInclude>
@@ -162,6 +189,45 @@
     </ClInclude>
     <ClInclude Include="Source\Entity.h">
       <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player.h">
+      <Filter>Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Weapon.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ammo.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Map.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Layer.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Collision.h">
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera_2D.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Collision2.h">
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Model_Level_Editor.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tile.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Model_MainMenu.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\View_LevelEditor.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\View_MainMenu.h">
+      <Filter>View</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +254,12 @@
     </Filter>
     <Filter Include="Character">
       <UniqueIdentifier>{b917bf8b-b6da-40f7-a758-d8a03f05f28c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon">
+      <UniqueIdentifier>{850e2665-927c-45fb-af5e-44e29b375250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{a596be47-102d-4427-979a-e4fcb40e1d1c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

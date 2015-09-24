@@ -46,9 +46,9 @@ void Model_Gameplay::Init()
 	InitObject();
 
 	//player
-	//!! COLLISION BUG: IF SCALE IS 50 BY 50 AND WALL IS EXACTLY 12 SCALE THICK, WILL GO THRU
+	//!! COLLISION BUG: IF SCALE IS 50 BY 50 , WILL GO THRU
 	//WARNING: DO NOT GO BEYOND 1000 speed since sweep AABB bug not solved yet
-	player.Init(Vector3(800, 800, 1), Vector3(150, 150, 1), Character::E, 100, 100, 100000);
+	player.Init(Vector3(800, 800, 1), Vector3(30, 70, 1), Character::E, 100, 100, 350);
 	elementObject.push_back(player.getObject());
 
 	/* Init all game objects */
@@ -76,8 +76,8 @@ void Model_Gameplay::InitObject()
 	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
 
 	//RIGHT
-	obj_ptr->translateObject(2000, 950, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(6, 1200, 100);	
+	obj_ptr->translateObject(2200, 750, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(12, 1600, 100);	
 
 	elementObject.push_back(obj_ptr);
 
@@ -87,7 +87,7 @@ void Model_Gameplay::InitObject()
 	
 	//TOP
 	obj_ptr->translateObject(m_view_width * 0.5f, 1500, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(1800, 6, 100);
+	obj_ptr->scaleObject(2000, 12, 100);
 
 	elementObject.push_back(obj_ptr);
 
@@ -97,8 +97,8 @@ void Model_Gameplay::InitObject()
 	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
 	
 	//LEFT
-	obj_ptr->translateObject(400, 950, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(6, 1200, 100);	
+	obj_ptr->translateObject(200, 750, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(12, 1600, 100);	
 
 	elementObject.push_back(obj_ptr);
 
@@ -108,8 +108,8 @@ void Model_Gameplay::InitObject()
 	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
 	
 	//BOTTOM
-	obj_ptr->translateObject(m_view_width * 0.5f, 400, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(1800, 6, 100);	
+	obj_ptr->translateObject(m_view_width * 0.5f, 50, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(2000, 12, 100);	
 
 	elementObject.push_back(obj_ptr);
 
@@ -119,15 +119,25 @@ void Model_Gameplay::InitObject()
 
 	//BOTTOM
 	obj_ptr->translateObject(696.40192, 1222.2026, -1.f);	//start at right side of box (going top left initially)
-	obj_ptr->scaleObject(1, 500, 50);	
+	obj_ptr->scaleObject(12, 250, 50);	
+
+	elementObject.push_back(obj_ptr);
+
+	/* WALL 6 */
+	obj_ptr = new Object;
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_GREEN], NULL, false, false);
+
+	//BOTTOM
+	obj_ptr->translateObject(849.0, 1222.2026, -1.f);	//start at right side of box (going top left initially)
+	obj_ptr->scaleObject(12, 250, 50);	
 
 	elementObject.push_back(obj_ptr);
 }
 
-void Model_Gameplay::Update(double dt, bool* myKeys)
+void Model_Gameplay::Update(double dt, bool* myKeys, Vector3 cursorPos)
 {
 	/* model update */
-	Model::Update(dt, myKeys);
+	Model::Update(dt, myKeys, cursorPos);
 
 	/* Update player */
 	player.Update(dt, myKeys, elementObject);

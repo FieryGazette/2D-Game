@@ -10,7 +10,11 @@
 
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
+/* View */
 #include "View_3D_Game.h"
+#include "View_MainMenu.h"
+#include "View_LevelEditor.h"
+
 #include "timer.h"
 
 class Controller
@@ -25,30 +29,13 @@ public:
 
 /******************** core functions **********************/
 	void Init();
-
 	virtual void Run() = 0;
-
 	virtual void Exit();
 
 /********************** controller functions **********************/
 	static bool IsKeyPressed(unsigned short key);
-	static bool getKeyboardUpdate();
-
-/********************** mouse **********************/
-	static double mouse_last_x, mouse_last_y, mouse_current_x, mouse_current_y, mouse_diff_x, mouse_diff_y;
-
-	bool GetMouseUpdate();
-	static double getCameraYaw();
-	static double getCameraPitch();
 
 /********************** getter setter **********************/
-	bool* getKeyPressed();
-	static double getYawAngle();
-	static double  getPitchAngle();
-	static void incrementPitchAngle(float i);
-	static void incrementYawAngle(float i);
-	static void setYawAngle(float y);
-	static  void setPitchAngle(float p);
 	float getFPS();
 
 /********************* constructor / destructor *********************/
@@ -60,24 +47,22 @@ protected:
 	const static unsigned int Controller::frameTime; // time for each frame
 
 /********************* Core *********************/
-	void InitCurrentView();
-	void InitCurrentModel();
-	void RunGameLoop(bool* myKeys);
+	/** Init **/
+	virtual void InitCurrentView() = 0;
+	virtual void InitCurrentModel() = 0;
+
+	/** Update **/
+	virtual void RunGameLoop();
+		virtual void UpdateKeys();
+		virtual void UpdateMouse();
+		virtual void UpdateKeyPressed();	//if a key is pressed, update this function
 
 /********************** Input **********************/
 	MODE type;	//mode
 
 /********************** model and view ptr **********************/
-	Model* currentModel; 
-	View* currentView;
-	bool* myKeys;	//if theres a control array, not NULL
-
-/********************** mouse **********************/
-	static double camera_yaw, camera_pitch;
-	const static int m_window_deadzone = 100;
-	static double yawAngle, pitchAngle;
-	static int mouseRightButton;
-	static int mouseLeftButton;
+	Model* currentModel; //points to the current model to run
+	View* currentView;	//points to the current vuew to run
 
 /********************** Declare a window object **********************/
 	StopWatch m_timer;

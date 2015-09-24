@@ -1,25 +1,25 @@
-#include "View_3D_Game.h"
+#include "View_MainMenu.h"
 
-View_3D_Game::View_3D_Game(){}
+View_Main_Menu::View_Main_Menu(){}
 
-View_3D_Game::View_3D_Game(Model_Gameplay* model, unsigned short console_width, unsigned short console_height, MODE mode) :
+View_Main_Menu::View_Main_Menu(Model_MainMenu* model, unsigned short console_width, unsigned short console_height, MODE mode) :
 	View(model, console_width, console_height, mode)
 {
 	this->model = model;
 }
 
-View_3D_Game::~View_3D_Game()
+View_Main_Menu::~View_Main_Menu()
 {
 }
 
 /********************** Core functions *****************************/
-void View_3D_Game::Init()
+void View_Main_Menu::Init()
 {
 	/* Set up basic stuff */
 	View::StartInit();
 }
 
-void View_3D_Game::Render(const float fps)
+void View_Main_Menu::Render(const float fps)
 {
 	/* Set up basic stuff */
 	View::StartRendering(fps);
@@ -29,7 +29,7 @@ void View_3D_Game::Render(const float fps)
 	RenderHUD();
 }
 
-void View_3D_Game::RenderCollideBox()
+void View_Main_Menu::RenderCollideBox()
 {
 	for(vector<Object*>::iterator it = model->getObject()->begin(); it != model->getObject()->end(); ++it)
 	{
@@ -47,7 +47,7 @@ void View_3D_Game::RenderCollideBox()
 	}
 }
 
-void View_3D_Game::RenderHUD()
+void View_Main_Menu::RenderHUD()
 {
 	//On screen text
 	if(Geometry::meshList[Geometry::GEO_AR_CHRISTY] != NULL)
@@ -66,7 +66,7 @@ void View_3D_Game::RenderHUD()
 	}
 }
 
-void View_3D_Game::RenderObject()
+void View_Main_Menu::RenderObject()
 {
 	/* Renders all objects */
 	for(vector<Object*>::iterator it = model->getObject()->begin(); it != model->getObject()->end(); ++it)
@@ -83,12 +83,12 @@ void View_3D_Game::RenderObject()
 	}
 }
 
-void View_3D_Game::SetModel(Model_Gameplay* model)
+void View_Main_Menu::SetModel(Model_MainMenu* model)
 {
 	this->model = model;
 }
 
-void View_3D_Game::Exit()
+void View_Main_Menu::Exit()
 {
 	View::Exit();
 }

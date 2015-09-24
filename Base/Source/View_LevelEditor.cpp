@@ -1,25 +1,25 @@
-#include "View_3D_Game.h"
+#include "View_LevelEditor.h"
 
-View_3D_Game::View_3D_Game(){}
+View_Level_Editor::View_Level_Editor(){}
 
-View_3D_Game::View_3D_Game(Model_Gameplay* model, unsigned short console_width, unsigned short console_height, MODE mode) :
+View_Level_Editor::View_Level_Editor(Model_Level_Editor* model, unsigned short console_width, unsigned short console_height, MODE mode) :
 	View(model, console_width, console_height, mode)
 {
 	this->model = model;
 }
 
-View_3D_Game::~View_3D_Game()
+View_Level_Editor::~View_Level_Editor()
 {
 }
 
 /********************** Core functions *****************************/
-void View_3D_Game::Init()
+void View_Level_Editor::Init()
 {
 	/* Set up basic stuff */
 	View::StartInit();
 }
 
-void View_3D_Game::Render(const float fps)
+void View_Level_Editor::Render(const float fps)
 {
 	/* Set up basic stuff */
 	View::StartRendering(fps);
@@ -29,7 +29,7 @@ void View_3D_Game::Render(const float fps)
 	RenderHUD();
 }
 
-void View_3D_Game::RenderCollideBox()
+void View_Level_Editor::RenderCollideBox()
 {
 	for(vector<Object*>::iterator it = model->getObject()->begin(); it != model->getObject()->end(); ++it)
 	{
@@ -47,7 +47,7 @@ void View_3D_Game::RenderCollideBox()
 	}
 }
 
-void View_3D_Game::RenderHUD()
+void View_Level_Editor::RenderHUD()
 {
 	//On screen text
 	if(Geometry::meshList[Geometry::GEO_AR_CHRISTY] != NULL)
@@ -66,7 +66,7 @@ void View_3D_Game::RenderHUD()
 	}
 }
 
-void View_3D_Game::RenderObject()
+void View_Level_Editor::RenderObject()
 {
 	/* Renders all objects */
 	for(vector<Object*>::iterator it = model->getObject()->begin(); it != model->getObject()->end(); ++it)
@@ -83,12 +83,12 @@ void View_3D_Game::RenderObject()
 	}
 }
 
-void View_3D_Game::SetModel(Model_Gameplay* model)
+void View_Level_Editor::SetModel(Model_Level_Editor* model)
 {
 	this->model = model;
 }
 
-void View_3D_Game::Exit()
+void View_Level_Editor::Exit()
 {
 	View::Exit();
 }

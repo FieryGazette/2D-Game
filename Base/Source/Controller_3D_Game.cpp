@@ -3,12 +3,15 @@
 //Include the standard C++ headers
 #include <stdio.h>
 #include <stdlib.h>
-bool Controller_3D_Game::myKeys[TOTAL_CONTROL] = {false};
-char Controller_3D_Game::inputChar[PAUSE + 1] = {0};
 double Controller_3D_Game::scrollxPos = 0.f;
 double Controller_3D_Game::scrollyPos = 0.f;
+bool Controller_3D_Game::myKeys[TOTAL_CONTROLS] = {false};
+char Controller_3D_Game::inputChar[OPEN] = {0};
 
-//Scroll
+/********************** mouse **********************/
+int Controller_3D_Game::mouseRightButton;
+int Controller_3D_Game::mouseLeftButton;
+
 void scroll(GLFWwindow* window,double x,double y)
 {
 	Controller_3D_Game::setScrollX(x);
@@ -25,27 +28,46 @@ Controller_3D_Game::~Controller_3D_Game()
 }
 
 /******************** core functions **********************/
-void Controller_3D_Game::Init(Model* model, View_3D_Game* view)
+void Controller_3D_Game::Init()
 {
+	//mouse button
+	mouseLeftButton = glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT);
+	mouseRightButton = glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_RIGHT);
+
+	//hide the cursor
+	glfwSetInputMode(currentView->getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
 	//controls
 	InitControls();
 
+	/*** Create views and models ***/
+/********************** Models **********************/
+	Gameplay = new Model_Gameplay;
+	Level_Editor = new Model_Level_Editor;	
+	mainMenu = new Model_MainMenu;
+
+/********************** Views **********************/
+	view_MainMenu = new View_Main_Menu(mainMenu, 975, 650, View::TWO_D);
+	view_3D_Game = new View_3D_Game(Gameplay, 975, 650, View::TWO_D);
+
+/********************** Initialize **********************/
 	//init view
-	currentView = view;
+	currentView = view_3D_Game;
 	InitCurrentView();
 
 	//set model
-	currentModel = model;
+	currentModel = Gameplay;
 	InitCurrentModel();
 
 	//call last since view and model needed to be initialized first
 	Controller::Init();
+
+	//states
+	previousState = currentState = MAIN_MENU;
 }
 
 void Controller_3D_Game::InitControls()
 {
-	Controller::myKeys = myKeys;
-
 	//keys
 	for(int i = 0; i <= OPEN; ++i) //all 256 chars
 		myKeys[i] = false;
@@ -61,6 +83,28 @@ void Controller_3D_Game::InitControls()
 	inputChar[RELOAD] = 'R';
 	inputChar[FLY_UP] = 'K';
 	inputChar[FLY_DOWN] = 'L';
+}
+
+void Controller_3D_Game::InitCurrentModel()
+{
+	/* Init model and other related stuff */
+	currentModel->Init();
+}
+
+void Controller_3D_Game::InitCurrentView()
+{
+	/* Init view and other related stuff */
+	currentView->Init();
+}
+
+void Controller_3D_Game::setScrollX(double p)
+{
+	scrollxPos = p;
+}
+
+void Controller_3D_Game::setScrollY(double p)
+{
+	scrollyPos = p;
 }
 
 void Controller_3D_Game::Run()
@@ -82,12 +126,17 @@ void Controller_3D_Game::Run()
 		if(m_dAccumulatedTime_thread1 > 0.01)	//update: update fps is _dAccumulatedTime_thread1 > fps
 		{
 			/* Init new model etc... */
+			SwitchModels();
 
 			/* controls */
+			UpdateMouse();
 			UpdateKeys();
 
 			/** model update **/
-			currentModel->Update(m_dElapsedTime, myKeys);
+			currentModel->Update(m_dElapsedTime, myKeys, cursorPos);
+
+			/** States **/
+			previousState = currentState;
 
 			m_dAccumulatedTime_thread1 = 0.0;
 		}
@@ -109,15 +158,22 @@ void Controller_3D_Game::Run()
 	} //Check if the ESC key had been pressed or if the window had been closed
 }
 
+void Controller_3D_Game::SwitchModels()
+{
+	/** Switch models based on states **/
+	if( currentState == previousState )
+		return;
+}
+
 void Controller_3D_Game::UpdateKeys()
 {
 	/** Set all keys to false **/
-	for(unsigned i = 0; i < TOTAL_CONTROL; ++i)
+	for(unsigned i = 0; i < TOTAL_CONTROLS; ++i)
 		myKeys[i] = false;
 
 	/**** See which keys are pressed ****/
 	/** Keyboard **/
-	for(int i = 0; i <= OPEN; ++i) //all 256 chars
+	for(int i = 0; i <= OPEN; ++i)
 	{
 		if(IsKeyPressed(inputChar[i]))
 			myKeys[i] = true;
@@ -164,14 +220,25 @@ void Controller_3D_Game::UpdateKeys()
 	}
 }
 
- void Controller_3D_Game::setScrollX(double p)
- {
-	 scrollxPos = p;
- }
-
-void Controller_3D_Game::setScrollY(double p)
+void Controller_3D_Game::UpdateKeyPressed()
 {
-	 scrollyPos = p;
+	/* If a key is pressed, do stuff */
+}
+
+void Controller_3D_Game::UpdateMouse()
+{
+	/* Get cursor pos */
+	GetCursorPos();
+}
+
+void Controller_3D_Game::GetCursorPos()
+{
+
+}
+
+bool* Controller_3D_Game::getKeyPressed()
+{
+	return myKeys;
 }
 
 void Controller_3D_Game::Exit()

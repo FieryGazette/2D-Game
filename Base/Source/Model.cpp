@@ -1,9 +1,9 @@
 #include "Model.h"
 #include "GL\glew.h"
 #include <sstream>
-Camera3 Model::camera;
+Camera Model::camera;
 float Model::fovAngle;	//this angle is used for fov
-bool Model::InitStatic = false;
+bool Model::InitAlready = false;
 
 /*********** constructor/destructor ***************/
 Model::Model()
@@ -17,7 +17,7 @@ Model::~Model()
 /*********** core functions ***************/
 void Model::Init()
 {
-	if( InitStatic )	//init already no need init again
+	if( InitAlready )	//init already no need init again
 		return;
 
 	/* Must Init */
@@ -29,7 +29,7 @@ void Model::Init()
 
 	bLightEnabled = true;
 
-	InitStatic = true;
+	InitAlready = true;
 }
 
 void Model::InitMesh()
@@ -37,7 +37,7 @@ void Model::InitMesh()
 	Geometry::Init();
 }
 
-void Model::Update(double dt, bool* myKeys)
+void Model::Update(double dt, bool* myKeys, Vector3 cursorPos)
 {
 	/* openGL stuff */
 	UpdateOpenGL(dt, myKeys);
@@ -84,7 +84,7 @@ void Model::Exit()
 /*********** getter / setters ***************/
 bool Model::getbLightEnabled(){return bLightEnabled;}
 float Model::getFOV(){return fovAngle;}
-Camera3* Model::getCamera(){return &camera;}
+Camera* Model::getCamera(){return &camera;}
 Vector3 Model::getWorldDimension(){return worldDimension;}
 unsigned short Model::getViewWidth(){return m_view_width;}
 unsigned short Model::getViewHeight(){return m_view_height;}

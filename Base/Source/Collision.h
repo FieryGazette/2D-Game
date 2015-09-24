@@ -17,6 +17,7 @@ public:
 	/* Core */
 	//initialize
 	void Set(Vector3 pos, Vector3 scale, TYPE type);
+	void SetForTile(int xPos, int yPos, float tileScale);
 
 	//runtime
 	void Start(const Vector3& objectPos, const Vector3& velocity);	//before checking must set up

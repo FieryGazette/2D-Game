@@ -194,6 +194,7 @@ void Object::StartChecking(const Vector3& velocity)
 bool Object::checkCollision2(Object& checkMe)
 {
 	bool b = false;
+	//THIS object's collideBox, check object collideBox
 	b = Collision::CheckCollision(this->collideBox, checkMe.collideBox);
 
 	if(!collided)

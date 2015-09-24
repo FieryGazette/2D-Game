@@ -14,8 +14,6 @@ public:
 	~Camera();
 	virtual void Init(const Vector3& pos, const Vector3& target, const Vector3& up);
 	virtual void Reset();
-	virtual void Update(double dt, bool* myKeys) = 0;
-	virtual void UpdateStatus(const unsigned char key) = 0;
 };
 
 #endif

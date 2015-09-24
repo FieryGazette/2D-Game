@@ -19,6 +19,7 @@ GLFWwindow* View:: m_window_view;
 unsigned short View::m_screen_width;
 unsigned short View::m_screen_height;
 float View::FontData[256];
+bool View::InitAlready = false;
 
 //utility variables
 float lengthOffset = 0;
@@ -74,6 +75,12 @@ void View::SetModel(Model* model)
 /********************** Core functions *****************************/
 void View::StartInit()
 {
+	/** No need init so many times */
+	if( InitAlready )
+		return;
+
+	InitAlready = true;
+
 	//Set the error callback
 	glfwSetErrorCallback(error_callback_view);
 

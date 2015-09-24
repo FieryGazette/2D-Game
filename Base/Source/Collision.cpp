@@ -30,17 +30,22 @@ Vector3 originalPos;
 
 Collision::Collision()
 {
+	vel.SetZero();
+	normal.SetZero();
 }
 
 /* Init */
 void Collision::Set(Vector3 pos, Vector3 scale, TYPE type)
 {
 	position = pos;
-	startingPos = pos;
 	this->scale = scale;
 	this->type = type;
-	vel.SetZero();
-	normal.SetZero();
+}
+
+void Collision::SetForTile(int xPos, int yPos, float tileScale)
+{
+	this->position.Set( static_cast<float>(xPos) * tileScale, static_cast<float>(yPos) * tileScale, position.z);
+	this->scale.Set(tileScale, tileScale, tileScale);
 }
 
 /* Update */
