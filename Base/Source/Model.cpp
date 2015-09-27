@@ -5,11 +5,15 @@ Camera Model::camera;
 float Model::fovAngle;	//this angle is used for fov
 bool Model::InitAlready = false;
 bool Model::switchState = false;
+unsigned short Model::m_2D_view_width;
+unsigned short Model::m_2D_view_height;
+string Model::map_list = "";
 Model::STATES Model::currentState = IN_GAME;
 
 /*********** constructor/destructor ***************/
 Model::Model()
 {
+	initLocalAlready = false;
 }
 
 Model::~Model()
@@ -28,10 +32,16 @@ void Model::Init()
 	//2D: look to Z
 	camera.Init(Vector3(0.f, 0.f, 5.f), Vector3(0.f, 0.f, 4.f), Vector3(0, 1, 0));
 
+	/* Coord for UI */
+	m_2D_view_width = 160.f;
+	m_2D_view_height = 120.f;
 
 	bLightEnabled = true;
 
 	InitAlready = true;
+
+	/* Name of map list .txt */
+	map_list = "Maps//map_list.txt";
 }
 
 void Model::InitMesh()
@@ -90,6 +100,9 @@ Camera* Model::getCamera(){return &camera;}
 Vector3 Model::getWorldDimension(){return worldDimension;}
 unsigned short Model::getViewWidth(){return m_view_width;}
 unsigned short Model::getViewHeight(){return m_view_height;}
+unsigned short Model::get2DViewWidth(){return m_2D_view_width;}
+unsigned short Model::get2DViewHeight(){return m_2D_view_height;}
+bool Model::getInitLocal(){return initLocalAlready;}
 
 Position Model::getLightPos(int index)
 {

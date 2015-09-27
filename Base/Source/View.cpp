@@ -21,9 +21,26 @@ unsigned short View::m_screen_height;
 float View::FontData[256];
 bool View::InitAlready = false;
 
-//utility variables
+/************* matrix *****************/
+MS View::modelStack;
+MS View::viewStack;
+MS View::projectionStack;
+
+/************* lights *****************/
+Light View::lights[m_total_lights];	//for model, use the lights provided in view
+
+/********************** openGL *********************************/
+unsigned View::m_vertexArrayID;
+unsigned View::m_programID;
+unsigned View::m_parameters[View::U_TOTAL];
+float View::fps;
+
+/* Utilities */
 float lengthOffset = 0;
+float len = 0;
 float zOffset = 0;
+float textLength = 0;
+float textXLength = 0;
 
 //Define an error callback
 static void error_callback_view(int error, const char* description)
@@ -139,6 +156,7 @@ void View::StartInit()
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	//alpha
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -364,21 +382,21 @@ void View::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 }
 
-void View::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void View::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z)
 {
-	if(!mesh || mesh->textureID[0] <= 0)
+	if(!mesh || mesh->textureID[0] <= 0 || text.length() == 0)
 		return;
 
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
-	ortho.SetToOrtho(0, model->getViewWidth(), 0, model->getViewHeight(), -10, 10);
+	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity();
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
-	modelStack.Translate(x, y, 0);
+	modelStack.Translate(x, y, z);
 	modelStack.Scale(size, size, size);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
@@ -387,11 +405,21 @@ void View::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float s
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID[0]);
 	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for(unsigned i = 0; i < text.length(); ++i)
+
+	/* get total scale.x of string */
+	textLength = text.length();
+	textXLength = 0.f;
+	for(unsigned i = 0; i < textLength; ++i)
+	{
+		textXLength += FontData[text[i]];
+	}
+
+	lengthOffset = (textXLength * -0.5f) + (FontData[text[0]] * 0.5f);	//make sure is start from center
+	for(unsigned i = 0; i < textLength; ++i)
 	{
 		Mtx44 characterSpacing;
 
-		characterSpacing.SetToTranslation(lengthOffset, 1.f, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(lengthOffset, 0.f, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
@@ -401,6 +429,75 @@ void View::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float s
 	}
 
 	lengthOffset = 0.f;	//reset length
+	textXLength = 0.f;
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
+void View::RenderTextOnScreenCutOff(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z)
+{
+	if(!mesh || mesh->textureID[0] <= 0 || text.length() == 0)
+		return;
+	
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, z);
+	modelStack.Scale(size, size, size);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID[0]);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+
+	/* get total scale.x of string */
+	textLength = text.length();
+	textXLength = 0.f;
+	for(unsigned i = 0; i < textLength && text[i] != '/'; ++i)
+	{
+		textXLength += FontData[text[i]];
+	}
+
+	y = 0.f;
+	lengthOffset = (textXLength * -0.5f) + (FontData[text[0]] * 0.5f);	//make sure is start from center
+	len = lengthOffset;
+	for(unsigned i = 0; i < textLength; ++i)
+	{
+		if(text[i] == '/' && i + 1 < textLength)
+		{
+			y -= 1.f;
+			len = lengthOffset;
+			++i;
+		}
+
+		Mtx44 characterSpacing;
+
+		characterSpacing.SetToTranslation(len, y, 0); //1.0f is the spacing of each character, you may change this value
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		len += FontData[text[i]];
+
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+
+	lengthOffset = 0.f;	//reset length
+	textXLength = 0.f;
+	len = 0.f;
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	projectionStack.PopMatrix();
@@ -497,6 +594,7 @@ void View::RenderMesh(Mesh *mesh, bool enableLight)
 
 	for(int i = 0; i < 2; ++i)
 	{
+		/* have more than one texture */
 		if(mesh->textureID[i] > 0)
 		{
 			glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED + i], 1);
@@ -513,10 +611,10 @@ void View::RenderMesh(Mesh *mesh, bool enableLight)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x, float y, float z, float angle)
+void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey, float sizez, float x, float y, float z, float angle)
 {
 	Mtx44 ortho;
-	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
+	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
@@ -525,7 +623,7 @@ void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x, flo
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, z);
 	modelStack.Rotate(angle, 0, 0, 1);
-	modelStack.Scale(size, size, size);
+	modelStack.Scale(sizex, sizey, sizez);
 
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
@@ -549,90 +647,6 @@ void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x, flo
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-
-	modelStack.PopMatrix();
-	viewStack.PopMatrix();
-	projectionStack.PopMatrix();
-}
-
-void View::Render2DMesh(Mesh *mesh, bool enableLight, float sizeX, float sizeY, float x, float y)
-{
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, m_screen_width, 0, m_screen_height, -10, 10);
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity();
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizeX, sizeY, 1);
-
-	/*if (rotate)
-		modelStack.Rotate(rotateAngle, 0, 0, 1);*/
-
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	
-	for(int i = 0; i < 2; ++i)
-	{
-		if(mesh->textureID[i] > 0)
-		{
-			glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED + i], 1);
-			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, mesh->textureID[i]);
-			glUniform1i(m_parameters[U_COLOR_TEXTURE + i], i);
-		}
-		else
-			glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED + i], 0);
-	}
-
-	mesh->Render();
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	modelStack.PopMatrix();
-	viewStack.PopMatrix();
-	projectionStack.PopMatrix();
-}
-
-void View::Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, int tileType)
-{
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, m_screen_width, 0, m_screen_height, -10, 10);
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity();
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	modelStack.Translate(x, y, 2);
-	modelStack.Scale(size, size, 1);
-
-	/*if (rotate)
-		modelStack.Rotate(rotateAngle, 0, 0, 1);*/
-
-	Mtx44 MVP, modelView, modelView_inverse_transpose;
-	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	
-	for(int i = 0; i < 2; ++i)
-	{
-		if(mesh->textureID[i] > 0)
-		{
-			glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED + i], 1);
-			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, mesh->textureID[i]);
-			glUniform1i(m_parameters[U_COLOR_TEXTURE + i], i);
-		}
-		else
-			glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED + i], 0);
-	}
-
-	mesh->Render((tileType - 1) * 6, 6);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
 
 	modelStack.PopMatrix();
 	viewStack.PopMatrix();

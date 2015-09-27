@@ -57,12 +57,12 @@ void View_3D_Game::RenderHUD()
 		/* FPS */
 		ss.precision(5);
 		ss << "FPS: " << fps;
-		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 1, 0), 76, 55, 66);
+		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 1, 0), 6, 18, 8);
 		ss.str("");
 
 		/* Pos */
 		ss << "Pos: " << model->getCamera()->position;
-		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 0, 1), 76, 55, 32);
+		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 0, 1), 6, 28, 4);
 	}
 }
 

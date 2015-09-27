@@ -34,6 +34,11 @@ public:
 	void Rotate(float degrees, float axisX, float axisY, float axisZ);
 	void Scale(float scaleX, float scaleY, float scaleZ);
 	void Translate(float translateX, float translateY, float translateZ);
+
+	/* Overloaded to take in Vector3 */
+	void Scale(Vector3& scale);
+	void Translate(Vector3& translate);
+
 	void Frustum(double left, double right, double	bottom, double top, double near, double far);
 	void LookAt(double eyeX, double eyeY, double eyeZ,
 				double centerX, double centerY, double centerZ,

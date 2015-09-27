@@ -18,6 +18,13 @@ void scroll(GLFWwindow* window,double x,double y)
 	Controller_3D_Game::setScrollY(y);
 }
 
+/**/
+/*
+	Controller for 2D Game. If first time come to a model, no matter in init or update function,
+	will always init then. So if never even went to edit function, edit model will not even be init.
+*/
+/**/
+
 /********************* constructor / destructor *********************/
 Controller_3D_Game::Controller_3D_Game()
 {
@@ -48,6 +55,7 @@ void Controller_3D_Game::Init()
 
 /********************** Views **********************/
 	view_MainMenu = new View_Main_Menu(mainMenu, 975, 650, View::TWO_D);
+	view_LevelEditor = new View_Level_Editor(Level_Editor, 975, 650, View::TWO_D);
 	view_3D_Game = new View_3D_Game(Gameplay, 975, 650, View::TWO_D);
 
 /********************** Initialize **********************/
@@ -162,16 +170,18 @@ void Controller_3D_Game::SwitchModels()
 	{
 	case Model::IN_GAME:
 		currentModel = Gameplay;
+		currentModel->Init();
 		currentView = view_3D_Game;
-		currentView->SetModel(currentModel);	//need set model since edit and game use same view
+		//currentView->SetModel(currentModel);	//need set model since edit and game use same view update 2: no need already
 		break;
 	case Model::EDIT_LEVEL:
 		currentModel = Level_Editor;
-		currentView = view_3D_Game;
-		currentView->SetModel(currentModel);
+		currentModel->Init();
+		currentView = view_LevelEditor;
 		break;
 	case Model::MAIN_MENU:
 		currentModel = mainMenu;
+		currentModel->Init();
 		currentView = view_MainMenu;
 		break;
 	}

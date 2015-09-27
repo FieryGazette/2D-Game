@@ -155,6 +155,21 @@ void MS::Scale(float scaleX, float scaleY, float scaleZ) {
 /******************************************************************************/
 /*!
 \brief
+Multiply the top matrix with a scale matrix based on the following parameters
+
+\param	scale
+	Vector3 scale factor
+*/
+/******************************************************************************/
+void MS::Scale(Vector3& scale) {
+	Mtx44 mat;
+	mat.SetToScale(scale.x, scale.y, scale.z);
+	ms.top() = ms.top() * mat;
+}
+
+/******************************************************************************/
+/*!
+\brief
 Multiply the top matrix with a translation matrix based on the following 
 parameters
 
@@ -169,6 +184,22 @@ parameters
 void MS::Translate(float translateX, float translateY, float translateZ) {
 	Mtx44 mat;
 	mat.SetToTranslation(translateX, translateY, translateZ);
+	ms.top() = ms.top() * mat;
+}
+
+/******************************************************************************/
+/*!
+\brief
+Multiply the top matrix with a translation matrix based on the following 
+parameters
+
+\param	translate
+	Vector3 offset
+*/
+/******************************************************************************/
+void MS::Translate(Vector3& translate) {
+	Mtx44 mat;
+	mat.SetToTranslation(translate.x, translate.y, translate.z);
 	ms.top() = ms.top() * mat;
 }
 

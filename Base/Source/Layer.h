@@ -18,11 +18,13 @@ public:
 	~Layer();
 
 	/* Core */
+	//if is existing tile, will edit that existing tile instead
 	void addTile(int& x, int& y);
+	void editTile(int type);	//pass in tile type
 
 	/* Utilities */
 	bool LoadTileLayer();
-	void GetTilePos(int tileIndex, Vector3& pos);
+	void GetTilePos(int tileIndex, Vector3& pos);	//for looping use
 	float getTileSize();
 	int getTotalTiles();
 	void Clear();	//free memory
@@ -31,7 +33,7 @@ private:
 	/* Info for map */
 	int layer;	//what layer is it
 	int tileSize;	//tile size for this layer
-	bool collidable;	//can collide or not
+	bool collidable;	//this layer can collide or not
 	bool edited;	//is it edited?
 
 	/* Tile stuff */

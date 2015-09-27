@@ -45,7 +45,7 @@ GLuint LoadTGA(const char *file_path)				// load TGA file to memory
 	glBindTexture(GL_TEXTURE_2D, texture);
 	if(bytesPerPixel == 3)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-	else //bytesPerPixel == 4
+	else //bytesPerPixel == 4 (R, G, B, A)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);

@@ -3,6 +3,7 @@
 Mesh* Geometry::meshList[NUM_GEOMETRY];
 vector<SpriteAnimation*> Geometry::animation;
 vector<unsigned char> Geometry::m_heightMap;
+TileMap Geometry::tileMap_List[Geometry::TOTAL_TILEMAP];
 
 	/* core */
 void Geometry::Init()
@@ -96,9 +97,10 @@ void Geometry::Init()
 	meshList[GEO_DERELICT_BUILDING_01] = MeshBuilder::GenerateOBJ("derelict building 01", "OBJ//derelict_building01.obj");
 	meshList[GEO_DERELICT_BUILDING_01]->textureID[0] = LoadTGA("Image//derelict_building01.tga");
 
-	meshList[GEO_TILEMAP] = MeshBuilder::GenerateTileMap("Tile Map", Color(1, 1, 1), 32.f, 32.f, 8, 8);	//set the width/heignt of each tile same as the .tga w/h
-	meshList[GEO_TILEMAP]->textureID[0] = LoadTGA("Image//tile2_ground.tga");
-	
+	/* tile map */
+	tileMap_List[TILEMAP_NATURE].mesh = MeshBuilder::GenerateTileMap("Tile Map", Color(1, 1, 1), 32.f, 32.f, 8, 8);	//set the width/heignt of each tile same as the .tga w/h
+	tileMap_List[TILEMAP_NATURE].mesh->textureID[0] = LoadTGA("Image//tile2_ground.tga");
+	tileMap_List[TILEMAP_NATURE].totalTiles = 8 * 8;	//num row * num col
 
 	animation.resize(2);	//2 animations
 

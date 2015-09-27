@@ -145,24 +145,31 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, Color color, float 
 	v.pos.Set(-0.5f * length,-0.5f * length,-0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);
+
 	v.pos.Set(0.5f * length,-0.5f * length,-0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);
+
 	v.pos.Set(0.5f * length, 0.5f * length,-0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);
+
 	v.pos.Set(-0.5f * length, 0.5f * length,-0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);
+
 	v.pos.Set(-0.5f * length,-0.5f * length, 0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);
+
 	v.pos.Set(0.5f * length,-0.5f * length, 0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);
+
 	v.pos.Set(0.5f * length, 0.5f * length, 0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);
+
 	v.pos.Set(-0.5f * length, 0.5f * length, 0.5f * length);
 	v.color = color;
 	vertex_buffer_data.push_back(v);

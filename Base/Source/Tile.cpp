@@ -26,3 +26,9 @@ bool Tile::CheckCollision(Collision& checkbox, float tileScale)
 	/* Check collision with this tile */
 	return Collision::CheckCollision(checkbox, collisionBox);
 }
+
+/* Utilities*/
+bool Tile::operator== (Tile& rhs)
+{
+	return this->xPos == rhs.xPos && this->yPos == rhs.yPos;
+}

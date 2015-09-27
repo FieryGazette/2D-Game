@@ -116,14 +116,25 @@ public:
 	virtual void Exit();
 
 /**************** render utilities ****************/
-	void RenderText(Mesh* mesh, std::string text, Color color);
+	/* Light */
 	void RenderLight();
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
+
+	/* 3D */
 	void RenderMesh(Mesh *mesh, bool enableLight);
-	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size=1.0f, float x=0.0f, float y=0.0f, float z = 0.f, float angle = 0.f);
 	void RenderMeshInLines(Mesh* mesh, const Vector3& position, const Vector3& scale);
-	void Render2DMesh(Mesh *mesh, bool enableLight, float sizeX, float sizeY, float x, float y);
+
+	/* 2D */
+	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex=1.0f, float sizey = 1.0f, float sizez = 1.0f, float x=0.0f, float y=0.0f, float z = 0.f, float angle = 0.f);
 	void Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, int tileType);
+
+	/* Text */
+	//3D
+	void RenderText(Mesh* mesh, std::string text, Color color);
+
+	//2D
+	//render text with cutoff: add slash to part where supposed to go to next line
+	void RenderTextOnScreenCutOff(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
+	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
 
 /********************** Getter/setter *****************************/
 	unsigned short getScreenHeight();
@@ -145,18 +156,18 @@ protected:
 	MODE mode;
 
 /************* matrix *****************/
-	MS modelStack;
-	MS viewStack;
-	MS projectionStack;
+	static MS modelStack;
+	static MS viewStack;
+	static MS projectionStack;
 
 /************* lights *****************/
-	Light lights[m_total_lights];	//for model, use the lights provided in view
+	static Light lights[m_total_lights];	//for model, use the lights provided in view
 
 /********************** openGL *********************************/
-	unsigned m_vertexArrayID;
-	unsigned m_programID;
-	unsigned m_parameters[U_TOTAL];
-	float fps;
+	static unsigned m_vertexArrayID;
+	static unsigned m_programID;
+	static unsigned m_parameters[U_TOTAL];
+	static float fps;
 
 /********************** text **********************/
 	static float FontData[256];

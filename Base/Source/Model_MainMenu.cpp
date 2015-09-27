@@ -25,6 +25,12 @@ Model_MainMenu::~Model_MainMenu()
 void Model_MainMenu::Init()
 {
 	Model::Init();
+
+	/* Init local already? */
+	if( initLocalAlready )		//yes, init alr
+		return;
+
+	initLocalAlready = true;	//no, then first time init
 }
 
 void Model_MainMenu::InitObject()

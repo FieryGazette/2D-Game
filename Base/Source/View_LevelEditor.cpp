@@ -19,13 +19,28 @@ void View_Level_Editor::Init()
 	View::StartInit();
 }
 
+Vector3 pos11, scale11;
 void View_Level_Editor::Render(const float fps)
 {
 	/* Set up basic stuff */
 	View::StartRendering(fps);
 
-	RenderCollideBox();
-	RenderObject();
+	/* Render UI */
+	UI_Object* u;
+	
+	for(vector<UI_Object*>::iterator it = model->UI_Object_List.begin(); it != model->UI_Object_List.end(); ++it)
+	{
+		u = (UI_Object*)*it;
+
+		if(u->getActive())
+		{
+			pos11 = u->getPosition();
+			scale11 = u->getScale();
+
+			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, 1, 0);
+		}
+	}
+	
 	RenderHUD();
 }
 
@@ -57,12 +72,12 @@ void View_Level_Editor::RenderHUD()
 		/* FPS */
 		ss.precision(5);
 		ss << "FPS: " << fps;
-		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 1, 0), 76, 55, 66);
+		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 1, 0), 6, 18, 8);
 		ss.str("");
 
 		/* Pos */
 		ss << "Pos: " << model->getCamera()->position;
-		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 0, 1), 76, 55, 32);
+		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 0, 1), 6, 28, 4);
 	}
 }
 

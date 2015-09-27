@@ -1,15 +1,14 @@
 #include "utilities.h"
 
 //client: string to be compared, matchee: string used to match
-bool searchTerm(const string& client, const string& matchee)
+bool c, m;
+bool searchTerm(string client, string matchee)
 {
-	if(client.length() == 0)
-	{
-		if(matchee.length() == 0)
-			return true;
-		else
-			return false;
-	}
+	c = client.length();
+	m = matchee.length();
+
+	if( !c && !m )	return true;
+	if( !c || !m ) return false;
 
 	for(int j = 0; j < client.length(); ++j)
 	{
@@ -64,4 +63,17 @@ void deleteChar(string& word, char del)
 
 	if(c == true)
 		word.resize(lastChar);
+}
+
+int stringToInt(string& num)
+{
+	int numm = 0;
+
+	int j = 1;
+	for(int i = num.length() - 1; i >= 0; --i, j *= 10)
+	{
+		numm += (num[i] - 48) * j;
+	}
+
+	return numm;
 }

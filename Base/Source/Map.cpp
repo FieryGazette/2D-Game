@@ -5,8 +5,9 @@ Vector3 Map::global_vec;
 Tile* Map::tile_ptr = NULL;
 
 /* Constructor/destructor */
-Map::Map()
+Map::Map(string name)
 {
+	this->name = name;
 }
 
 Map::~Map()
@@ -38,6 +39,15 @@ void Map::AddTile(int layerIndex, int& x, int& y)
 	layerList[layerIndex]->addTile(x, y);
 }
 
+void Map::Clear()
+{
+	for(int i = 0; i < layerList.size(); ++i)
+	{
+		layerList[i]->Clear();
+	}
+	layerList.clear();
+}
+
 /* Get data */
 void Map::GetPosOfTile(int layerIndex, int tileIndex, Vector3& pos)
 {
@@ -57,4 +67,9 @@ int Map::getLayerSize(int layerIndex)
 int Map::getMapSize()	
 {
 	return totalLayers;
+}
+
+string Map::getName()
+{
+	return name;
 }

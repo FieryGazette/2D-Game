@@ -7,8 +7,10 @@
 #include "Mesh.h"
 #include "Light.h"
 #include "MiniMap.h"
-#include "Object.h"
+#include "UI_Object.h"
 #include "Camera3.h"
+#include "readFrom.h"
+#include "writeTo.h"
 #include <sstream>
 #include <vector>
 using namespace std;
@@ -31,6 +33,10 @@ protected:
 /********************** View size *****************************/
 	unsigned short m_view_width;	//camera view size X
 	unsigned short m_view_height;	//camera view size Y
+
+	static unsigned short m_2D_view_width;
+	static unsigned short m_2D_view_height;
+
 	Vector3 worldDimension;	//max dimemsion for in-game world (eg. 1000 by 1000 by 1000 world space)
 
 	/************* Camera *****************/
@@ -49,11 +55,15 @@ protected:
 	vector<Object*> elementObject;	//sky, clouds stuff player cannot reach
 
 	/************ Flags ************/ 
-	static bool InitAlready;
+	static bool InitAlready;	//have we init all global stuff already?
+	bool initLocalAlready;	//have we init these local stuff already?
 
 	/*** Switch state? ***/
 	static bool switchState;
 	static STATES currentState;
+
+	/*********** Text files ************/
+	static string map_list;	//store all existing maps name
 public:
 
 	/*********** constructor/destructor ***************/
@@ -82,6 +92,9 @@ public:
 	unsigned short getViewWidth();
 	unsigned short getViewHeight();
 	static bool getSwitchState();
+	static unsigned short get2DViewWidth();
+	static unsigned short get2DViewHeight();
+	bool getInitLocal();
 	static STATES getCurrentState();
 	static void SetSwitchState(bool b);
 	Vector3 getWorldDimension();

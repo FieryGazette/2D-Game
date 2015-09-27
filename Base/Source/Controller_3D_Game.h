@@ -15,6 +15,7 @@ class Controller_3D_Game : public Controller
 
 /********************** Views **********************/
 	View_Main_Menu* view_MainMenu;
+	View_Level_Editor* view_LevelEditor;
 	View_3D_Game* view_3D_Game;
 
 /********************** Keyboard **********************/

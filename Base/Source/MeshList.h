@@ -12,9 +12,26 @@
 #include <vector>
 using std::vector;
 
+/**/
+/*
+	Tile map class. Contains mesh as well as total tiles.
+*/
+/**/
+struct TileMap
+{
+	Mesh* mesh;
+	int totalTiles;
+};
+
 class Geometry
 {
 public:
+	enum TILE_MAP
+	{
+		TILEMAP_NATURE,
+		TOTAL_TILEMAP,
+	};
+
 	enum GEOMETRY_TYPE
 	{
 		/* basic ABC */
@@ -68,9 +85,6 @@ public:
 		/* building */
 		GEO_DERELICT_BUILDING_01,
 
-		/* 2D */
-		GEO_TILEMAP,
-
 		NUM_GEOMETRY,
 	};
 
@@ -82,6 +96,9 @@ public:
 
 	/************ terrain ************/
 	static vector<unsigned char> m_heightMap;
+
+	/************ TileMap ************/
+	static TileMap tileMap_List[TOTAL_TILEMAP]; 
 
 	/* core */
 	static void Init();	//MUST BE CALLED ONCE: ANYWHERE

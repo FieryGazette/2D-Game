@@ -48,9 +48,6 @@ public:
 	void AddParent(Object* parent);
 	void Init();
 
-	/* particle */
-	virtual void Update(const double& dt, Vector3& playerPos){};
-
 	/*** utilities ***/
 	void transformWithParent();	//position recalculated after transformation
 	void checkCollision(Object& checkObject);	//if collide, bounce back

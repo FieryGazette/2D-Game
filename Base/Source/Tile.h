@@ -21,6 +21,9 @@ public:
 	static Collision collisionBox;	//Shared collision box
 
 	int xPos, yPos;	//x and y pos to
+
+	/* Utilities */
+	bool operator== (Tile& rhs);
 };
 
 

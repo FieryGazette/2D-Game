@@ -31,7 +31,17 @@ bool Layer::LoadTileLayer()
 
 void Layer::addTile(int& x, int& y)
 {
-	Tile* ptr = new Tile;
+	Tile* ptr = NULL;
+
+	for(int i = 0; i < TileMap.size(); ++i)
+	{
+		if( TileMap[i]->xPos == x && TileMap[i]->yPos == y )
+		{
+			return;
+		}
+	}
+
+	ptr = new Tile;
 	ptr->xPos = x;
 	ptr->yPos = y;
 
@@ -40,8 +50,7 @@ void Layer::addTile(int& x, int& y)
 
 void Layer::GetTilePos(int tileIndex, Vector3& pos)
 {
-	Tile* ptr = TileMap[tileIndex];
-	pos.SetXY(ptr->xPos * tileSize, ptr->yPos * tileSize);
+	pos.SetXY(TileMap[tileIndex]->xPos * tileSize, TileMap[tileIndex]->yPos * tileSize);
 }
 
 float Layer::getTileSize()

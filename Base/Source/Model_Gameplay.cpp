@@ -24,6 +24,12 @@ void Model_Gameplay::Init()
 {
 	Model::Init();
 
+	/* Init local already? */
+	if( initLocalAlready )		//yes, init alr
+		return;
+
+	initLocalAlready = true;	//no, then first time init
+
 	/* Coord of screen */
 	//3 : 2 (Follow screen dimension)
 	m_view_width = 2400.f;
@@ -45,7 +51,7 @@ void Model_Gameplay::Init()
 	//object
 	InitObject();
 
-	//player
+	//player: last so will alpha all walls
 	//!! COLLISION BUG: IF SCALE IS 50 BY 50 , WILL GO THRU
 	//WARNING: DO NOT GO BEYOND 1000 speed since sweep AABB bug not solved yet
 	player.Init(Vector3(800, 800, 1), Vector3(230, 230, 1), Character::E, 100, 100, 350);
