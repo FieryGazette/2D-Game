@@ -20,7 +20,9 @@ using std::vector;
 struct TileMap
 {
 	Mesh* mesh;
+	string name;
 	int totalTiles;
+	float tileScale;
 };
 
 class Geometry
@@ -58,6 +60,7 @@ public:
 		/* UI */
 		GEO_AR_CHRISTY,	//font
 		GEO_CROSSHAIR,
+		GEO_SELECTOR,
 
 		/* terrain */
 		GEO_SKYPLANE,

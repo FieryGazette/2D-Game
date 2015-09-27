@@ -55,7 +55,7 @@ void View_3D_Game::RenderHUD()
 		std::ostringstream ss;	//universal
 		
 		/* FPS */
-		ss.precision(5);
+		ss.precision(3);
 		ss << "FPS: " << fps;
 		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 1, 0), 6, 18, 8);
 		ss.str("");

@@ -4,21 +4,27 @@
 
 class Model_Level_Editor : public Model
 {
+public:
+
 	/** UI List **/
 	enum UI_LIST
 	{
 		/* Buttons */
-		/*BUTTON_PREVIOUS_BLOCK,
+		BUTTON_PREVIOUS_BLOCK,
 		BUTTON_NEXT_BLOCK,
-		BUTTON_PREVIOUS_LVL,
+		/*BUTTON_PREVIOUS_LVL,
 		BUTTON_NEXT_LVL,
 		BUTTON_SELECT_NEW_MAP,
 		BUTTON_CHANGE_TILE_MAP,*/
 
 		/* UIs */
 		UI_BLOCK_SELECTION_BAR,
-		/*UI_SIDE_BAR,
-		UI_TOP_BAR,*/
+		UI_SIDE_BAR,
+		UI_SELECT_TILEMAP_MENU,
+
+		/* Model stuff (Compulsory, must add this section to all enums concerning UI_Object_List) */
+		UI_CURSOR,
+
 		TOTAL_UI,
 	};
 
@@ -43,6 +49,12 @@ class Model_Level_Editor : public Model
 		DEFAULT,
 	};
 
+	/* TileMap stuff */
+	Geometry::TILE_MAP current_TileMap;	//current tilemap to use
+	int currentBlock;	//current block to add
+	Vector3 tile_startPos;	//starting pos of tiles
+	float tileScale;	//scale of tiles
+
 	/* Path for map file and tile map */
 	int currentLayer;	//current layer index of current map
 	string currentMapName;	//curent map
@@ -54,9 +66,6 @@ class Model_Level_Editor : public Model
 
 	/* Utilities */
 	static string name;
-public:
-/*********** vectors ***********/
-	vector<UI_Object*> UI_Object_List;
 
 /*********** constructor/destructor ***************/
 	Model_Level_Editor();
@@ -64,7 +73,8 @@ public:
 
 /*********** core functions ***************/
 	virtual void Init();
-	virtual void Update(double dt, bool* myKeys, Vector3 cursorPos);
+	virtual void NewStateSetup();
+	virtual void Update(double dt, bool* myKeys, Vector3& cursorPos);
 
 	virtual void Exit();
 

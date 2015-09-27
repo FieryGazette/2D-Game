@@ -20,6 +20,11 @@ Model_Level_Editor::~Model_Level_Editor()
 /*********** core functions ***************/
 void Model_Level_Editor::Init()
 {
+	/*** Stuff that need to always re-init here ***/
+
+
+
+	/*** Only init once stuff below here ***/
 	Model::Init();
 
 	/* Init local already? */
@@ -28,34 +33,54 @@ void Model_Level_Editor::Init()
 
 	initLocalAlready = true;	//no, then first time init
 
-	///* Buttons */
-	//BUTTON_PREVIOUS_BLOCK,
-	//	BUTTON_NEXT_BLOCK,
-	//	BUTTON_PREVIOUS_LVL,
-	//	BUTTON_NEXT_LVL,
-	//	BUTTON_SELECT_NEW_MAP,
-	//	BUTTON_CHANGE_TILE_MAP,
-
-	//	/* UIs */
-	//	UI_BLOCK_SELECTION_BAR,
-	//	UI_SIDE_BAR,
-	//	UI_TOP_BAR,
-	//	TOTAL_UI,
-
-	//m_2D_view_width = 160.f;
-	//m_2D_view_height = 120.f;
-
-	/* UI Stuff */
+	/* UI Vector resize */
 	UI_Object_List.resize(TOTAL_UI);
 
-	//blocks selector
+	/** Compulsory **/
+	UI_Object_List[UI_CURSOR] = cursor;
+
+	
+	/* UI Stuff */
+	float z = 1.f;
+	
+	/* blocks selector bar */
 	UI_Object_List[UI_BLOCK_SELECTION_BAR] = new UI_Object;
 	UI_Object_List[UI_BLOCK_SELECTION_BAR]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_BLUE], 
-		m_2D_view_width, m_2D_view_height * 0.2f, m_2D_view_width * 0.5f, m_2D_view_height * 0.1f);
+		m_2D_view_width, m_2D_view_height * 0.1f, m_2D_view_width * 0.5f, m_2D_view_height * 0.05f, z, true);
+	z += 1.05f;
 
-		//UI_Object_List
+	/** Tilemap stuff **/
+	current_TileMap = Geometry::TILEMAP_NATURE;
+	tile_startPos.Set(25.f, 5.5f, z);
+	currentBlock = 1;
+	tileScale = 10.f;
+	z += 0.05f;
 
-	/* Read from list and add maps */
+	/* Buttons for block */
+	UI_Object_List[BUTTON_PREVIOUS_BLOCK] = new UI_Object;
+	UI_Object_List[BUTTON_PREVIOUS_BLOCK]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
+		15.f, 10.f, 8.f, 5.5f, z, true);
+	z += 0.05f;
+
+	UI_Object_List[BUTTON_NEXT_BLOCK] = new UI_Object;
+	UI_Object_List[BUTTON_NEXT_BLOCK]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
+		15.f, 10.f, 152.f, 5.5f, z, true);
+	z += 0.05f;
+
+	/* side bar (select current map and layer) */
+	UI_Object_List[UI_SIDE_BAR] = new UI_Object;
+	UI_Object_List[UI_SIDE_BAR]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
+		18.f, m_2D_view_height * 0.9f, 9.f, m_2D_view_height * 0.55f, z, true);
+	z += 0.05f;
+
+	/* pop-up for selecting tile map */
+	UI_Object_List[UI_SELECT_TILEMAP_MENU] = new UI_Object;
+	UI_Object_List[UI_SELECT_TILEMAP_MENU]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_GREEN], 
+		m_2D_view_width * 0.85f, m_2D_view_height * 0.85f, m_2D_view_width * 0.5f, m_2D_view_height * 0.5f, z, false);
+	z += 0.05f;
+
+	cout << UI_Object_List.size() << endl;
+	/**** Read from list and add maps ****/
 
 
 	/** Init everything of object origin in vectors **/
@@ -72,8 +97,10 @@ void Model_Level_Editor::Init()
 	}
 }
 
-void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3 cursorPos)
+void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 {
+	Model::Update(dt, myKeys, cursorPos);
+
 	/* Switch state */
 	if( myKeys[AIM] )
 	{
@@ -89,7 +116,7 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3 cursorPos)
 		state = DEFAULT;
 		myKeys[SHOOT] = false;
 	}
-	
+
 	switch ( state )
 	{
 	case ADD_NEW_MAP:
@@ -167,7 +194,7 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3 cursorPos)
 
 	/* If hit right arrow, scroll right, if hit left arrow, scroll left */
 
-	/* If click on a tile, that tile is selectewd */
+	/* If click on a tile, that tile is selected */
 
 	/* Check cursor pos.x / tileSize and cursor pos.y / tileSize to get current tile */
 
@@ -176,6 +203,11 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3 cursorPos)
 	/* Right click == remove the tile */
 
 
+
+}
+
+void Model_Level_Editor::NewStateSetup()
+{
 
 }
 

@@ -29,6 +29,11 @@ public:
 		TOTAL_STATES,
 	};
 
+/*********** vectors ***********/
+	vector<UI_Object*> UI_Object_List;
+	vector<Object*> elementObject;	//sky, clouds stuff player cannot reach
+	static UI_Object* cursor;
+
 protected:
 /********************** View size *****************************/
 	unsigned short m_view_width;	//camera view size X
@@ -51,9 +56,6 @@ protected:
 	const static unsigned TOTAL_LIGHTS = 2;
 	Position lightPos[TOTAL_LIGHTS];
 
-	/************ Game objects ************/ 
-	vector<Object*> elementObject;	//sky, clouds stuff player cannot reach
-
 	/************ Flags ************/ 
 	static bool InitAlready;	//have we init all global stuff already?
 	bool initLocalAlready;	//have we init these local stuff already?
@@ -74,7 +76,8 @@ public:
 	virtual void Init();
 	void InitMesh();
 
-	virtual void Update(double dt, bool* myKeys, Vector3 cursorPos);
+	virtual void NewStateSetup();	//if changing state, call this function so new state can init stuff
+	virtual void Update(double dt, bool* myKeys, Vector3& cursorPos);
 	void UpdateOpenGL(double dt, bool* myKeys);
 	void UpdateFOV(double dt, bool* myKeys);
 

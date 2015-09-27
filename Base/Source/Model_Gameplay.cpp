@@ -22,6 +22,10 @@ Model_Gameplay::~Model_Gameplay()
 /*********** core functions ***************/
 void Model_Gameplay::Init()
 {
+	/*** Stuff that need to always re-init here ***/
+
+
+	/*** Only init once stuff below here ***/
 	Model::Init();
 
 	/* Init local already? */
@@ -52,8 +56,6 @@ void Model_Gameplay::Init()
 	InitObject();
 
 	//player: last so will alpha all walls
-	//!! COLLISION BUG: IF SCALE IS 50 BY 50 , WILL GO THRU
-	//WARNING: DO NOT GO BEYOND 1000 speed since sweep AABB bug not solved yet
 	player.Init(Vector3(800, 800, 1), Vector3(230, 230, 1), Character::E, 100, 100, 350);
 	elementObject.push_back(player.getObject());
 
@@ -140,7 +142,7 @@ void Model_Gameplay::InitObject()
 	elementObject.push_back(obj_ptr);
 }
 
-void Model_Gameplay::Update(double dt, bool* myKeys, Vector3 cursorPos)
+void Model_Gameplay::Update(double dt, bool* myKeys, Vector3& cursorPos)
 {
 	/* Switch state */
 	if( myKeys[SHOOT] )

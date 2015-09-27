@@ -29,7 +29,6 @@ public:
 /**************** render ****************/
 	void RenderObject();
 	void RenderCollideBox();
-	void RenderHUD();
 
 /**************** Utilites ******************/
 	void SetModel(Model_Level_Editor* model);

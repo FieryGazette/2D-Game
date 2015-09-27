@@ -7,6 +7,7 @@ bool Model::InitAlready = false;
 bool Model::switchState = false;
 unsigned short Model::m_2D_view_width;
 unsigned short Model::m_2D_view_height;
+UI_Object* Model::cursor;
 string Model::map_list = "";
 Model::STATES Model::currentState = IN_GAME;
 
@@ -23,6 +24,10 @@ Model::~Model()
 /*********** core functions ***************/
 void Model::Init()
 {
+	/*** Stuff that need to always re-init here ***/
+
+
+	/*** Only init once stuff below here ***/
 	if( InitAlready )	//init already no need init again
 		return;
 
@@ -40,6 +45,11 @@ void Model::Init()
 
 	InitAlready = true;
 
+	/* UI Object */
+	cursor = new UI_Object;
+	cursor->Set("Cursor", Geometry::meshList[Geometry::GEO_BACK], 
+		3.f, 3.f, 0.f, 0.f, 9.f, true);
+	
 	/* Name of map list .txt */
 	map_list = "Maps//map_list.txt";
 }
@@ -49,10 +59,12 @@ void Model::InitMesh()
 	Geometry::Init();
 }
 
-void Model::Update(double dt, bool* myKeys, Vector3 cursorPos)
+void Model::Update(double dt, bool* myKeys, Vector3& cursorPos)
 {
 	/* openGL stuff */
 	UpdateOpenGL(dt, myKeys);
+
+	cursor->SetPosition(cursorPos);
 
 	/* Sprite animation */
 	for(std::vector<SpriteAnimation*>::iterator it = Geometry::animation.begin(); it != Geometry::animation.end(); ++it)
@@ -91,6 +103,11 @@ void Model::Exit()
 	}
 
 	elementObject.clear();
+}
+
+void Model::NewStateSetup()
+{
+
 }
 
 /*********** getter / setters ***************/

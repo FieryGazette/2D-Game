@@ -1095,28 +1095,28 @@ Mesh* MeshBuilder::GenerateTileMap(const std::string &meshName, Color color, int
 			float v1 = 1.f - texHeight - i * texHeight;
 
 			// Vertex #1
-			v.pos.Set(0, 0, 0);
+			v.pos.Set(width * -0.5f, height * -0.5f, 0);
 			v.color = color;
 			v.normal.Set(0, 0, 1);
 			v.texCoord.Set(u1, v1);
 			vertex_buffer_data.push_back(v);
 
 			// Vertex #2
-			v.pos.Set(width, 0, 0);
+			v.pos.Set(width * 0.5f, height * -0.5f, 0);
 			v.color = color;
 			v.normal.Set(0, 0, 1);
 			v.texCoord.Set(u1 + texWidth, v1);
 			vertex_buffer_data.push_back(v);
 
 			// Vertex #3
-			v.pos.Set(width, height, 0);
+			v.pos.Set(width * 0.5f, height * 0.5f, 0);
 			v.color = color;
 			v.normal.Set(0, 0, 1);
 			v.texCoord.Set(u1 + texWidth, v1 + texHeight);
 			vertex_buffer_data.push_back(v);
 
 			// Vertex #4
-			v.pos.Set(0, height, 0);
+			v.pos.Set(width * -0.5f,  height * 0.5f, 0);
 			v.color = color;
 			v.normal.Set(0, 0, 1);
 			v.texCoord.Set(u1, v1 + texHeight);

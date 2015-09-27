@@ -41,6 +41,9 @@ void Geometry::Init()
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("GEO_CROSSHAIR", Color(1, 1, 1), 1.f);
 	meshList[GEO_CROSSHAIR]->textureID[0] = LoadTGA("Image//crosshair.tga");
 
+	meshList[GEO_SELECTOR] = MeshBuilder::GenerateQuad("selector", Color(1, 1, 1), 1.f);
+	meshList[GEO_SELECTOR]->textureID[0] = LoadTGA("Image//selector.tga");
+
 	/** skybox **/
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("LEFT", Color(1, 1, 1), 1.f);
 	meshList[GEO_LEFT]->textureID[0] = LoadTGA("Image//sunset_left.tga");
@@ -99,8 +102,10 @@ void Geometry::Init()
 
 	/* tile map */
 	tileMap_List[TILEMAP_NATURE].mesh = MeshBuilder::GenerateTileMap("Tile Map", Color(1, 1, 1), 32.f, 32.f, 8, 8);	//set the width/heignt of each tile same as the .tga w/h
+	tileMap_List[TILEMAP_NATURE].name = "Suck ma dick map";
 	tileMap_List[TILEMAP_NATURE].mesh->textureID[0] = LoadTGA("Image//tile2_ground.tga");
 	tileMap_List[TILEMAP_NATURE].totalTiles = 8 * 8;	//num row * num col
+	tileMap_List[TILEMAP_NATURE].tileScale = 32.f;
 
 	animation.resize(2);	//2 animations
 

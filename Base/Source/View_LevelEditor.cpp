@@ -25,7 +25,7 @@ void View_Level_Editor::Render(const float fps)
 	/* Set up basic stuff */
 	View::StartRendering(fps);
 
-	/* Render UI */
+	/*************** Render UI ***************/
 	UI_Object* u;
 	
 	for(vector<UI_Object*>::iterator it = model->UI_Object_List.begin(); it != model->UI_Object_List.end(); ++it)
@@ -37,11 +37,29 @@ void View_Level_Editor::Render(const float fps)
 			pos11 = u->getPosition();
 			scale11 = u->getScale();
 
-			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, 1, 0);
+			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, pos11.z, 0);
 		}
 	}
-	
-	RenderHUD();
+
+	/*************** Render TileMap ***************/
+	//Geometry::TILE_MAP current_TileMap;	//current tilemap to use
+	//Vector3 tile_startPos, tileScale;
+	//pos11, scale11;
+	pos11 = model->tile_startPos;
+	Vector3 selector;
+	float t_scale = (1.f / Geometry::tileMap_List[model->current_TileMap].tileScale) * model->tileScale;
+
+	for(int i = 1; i <= Geometry::tileMap_List[model->current_TileMap].totalTiles; ++i)	//loop thru all tiles
+	{
+		Render2DTile(Geometry::tileMap_List[model->current_TileMap].mesh, false, t_scale, pos11.x, pos11.y, pos11.z, i);
+
+		if( model->currentBlock == i )	//selected this block
+		{
+			RenderMeshIn2D(Geometry::meshList[Geometry::GEO_SELECTOR], false, model->tileScale * 1.1f, model->tileScale * 1.1f, 1, pos11.x, pos11.y, pos11.z, 0);
+		}
+
+		pos11.x += 12.f;	//go towards x positive
+	}
 }
 
 void View_Level_Editor::RenderCollideBox()
@@ -59,25 +77,6 @@ void View_Level_Editor::RenderCollideBox()
 		modelStack.Scale(o->getBbox()->scale.x, o->getBbox()->scale.y, o->getBbox()->scale.z);
 		RenderMesh(Geometry::meshList[Geometry::GEO_DEBUG_CUBE], false);
 		modelStack.PopMatrix();
-	}
-}
-
-void View_Level_Editor::RenderHUD()
-{
-	//On screen text
-	if(Geometry::meshList[Geometry::GEO_AR_CHRISTY] != NULL)
-	{
-		std::ostringstream ss;	//universal
-		
-		/* FPS */
-		ss.precision(5);
-		ss << "FPS: " << fps;
-		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 1, 0), 6, 18, 8);
-		ss.str("");
-
-		/* Pos */
-		ss << "Pos: " << model->getCamera()->position;
-		RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], ss.str(), Color(1, 0, 1), 6, 28, 4);
 	}
 }
 

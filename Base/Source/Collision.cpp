@@ -263,11 +263,6 @@ float Collision::SweptAABB(Collision& current, Collision& check)
 	/** set normal **/
 	current.normal.SetZero();
 
-	//if x/y/zEntry is largest, means that x/y/z surface is touching the other object, so it is colliding
-	//cout << xEntry << ' ' << yEntry << ' ' << zEntry << endl;
-	//collided X side
-
-
 	if( xEntry > yEntry && xEntry > zEntry )
 	{
 		current.normal.x = 1.f;	

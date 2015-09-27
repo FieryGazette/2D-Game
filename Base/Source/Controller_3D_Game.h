@@ -31,7 +31,7 @@ class Controller_3D_Game : public Controller
 	static double scrollyPos;
 
 /********************** cursor **********************/
-	Vector3 cursorPos;
+	static Vector3 cursorPos;
 
 public:
 /*********************** For scrolling /**********************/
@@ -57,7 +57,7 @@ public:
 		void SwitchModels();	//for update changing models, like main menu to game
 
 	/** Mouse utilities **/
-	void GetCursorPos();	//call to get cursor pos
+	static void GetCursorPos(GLFWwindow* const window);	//call to get cursor pos
 
 	/** Exit **/
 	virtual void Exit();

@@ -9,6 +9,7 @@ bool Controller_3D_Game::myKeys[TOTAL_CONTROLS] = {false};
 char Controller_3D_Game::inputChar[OPEN] = {0};
 
 /********************** mouse **********************/
+ Vector3 Controller_3D_Game::cursorPos;
 int Controller_3D_Game::mouseRightButton;
 int Controller_3D_Game::mouseLeftButton;
 
@@ -251,13 +252,21 @@ void Controller_3D_Game::UpdateKeyPressed()
 
 void Controller_3D_Game::UpdateMouse()
 {
-	/* Get cursor pos */
-	GetCursorPos();
+	GetCursorPos(View::getWindow_view());
 }
 
-void Controller_3D_Game::GetCursorPos()
+void Controller_3D_Game::GetCursorPos(GLFWwindow* const window)
 {
+	double x;
+	double y;
+	glfwGetCursorPos(window, &x, &y);
 
+	int w = View::getScreenWidth();
+	int h = View::getScreenHeight();
+
+	float posX = static_cast<float>(x) / w * Model::get2DViewWidth();
+	float posY = (h - static_cast<float>(y)) / h * Model::get2DViewHeight();
+	cursorPos.Set(posX, posY, 0);
 }
 
 bool* Controller_3D_Game::getKeyPressed()

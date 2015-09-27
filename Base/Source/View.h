@@ -125,7 +125,7 @@ public:
 
 	/* 2D */
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex=1.0f, float sizey = 1.0f, float sizez = 1.0f, float x=0.0f, float y=0.0f, float z = 0.f, float angle = 0.f);
-	void Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, int tileType);
+	void Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, float z, int tileType);
 
 	/* Text */
 	//3D
@@ -137,10 +137,11 @@ public:
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
 
 /********************** Getter/setter *****************************/
-	unsigned short getScreenHeight();
-	unsigned short getScreenWidth();
+	static unsigned short getScreenHeight();
+	static unsigned short getScreenWidth();
 	Model* getModel();
 	void SetModel(Model* model);
+	static GLFWwindow* getWindow_view();
 
 /********************** openGL *********************************/
 	static GLFWwindow* getWindow();
