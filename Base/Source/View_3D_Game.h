@@ -27,7 +27,6 @@ public:
 	virtual void Exit();
 
 /**************** render ****************/
-	void RenderObject();
 	void RenderCollideBox();
 	void RenderHUD();
 

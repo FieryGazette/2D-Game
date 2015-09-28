@@ -9,14 +9,6 @@ public:
 	/** UI List **/
 	enum UI_LIST
 	{
-		/* Buttons */
-		BUTTON_PREVIOUS_BLOCK,	//left
-		BUTTON_NEXT_BLOCK,	//right
-		/*BUTTON_PREVIOUS_LVL,
-		BUTTON_NEXT_LVL,
-		BUTTON_SELECT_NEW_MAP,
-		BUTTON_CHANGE_TILE_MAP,*/
-
 		/* UIs */
 		UI_BLOCK_SELECTION_BAR,
 		UI_SIDE_BAR,
@@ -26,6 +18,19 @@ public:
 		UI_CURSOR,
 
 		TOTAL_UI,
+	};
+
+	enum BUTTON_LIST
+	{
+		/* Buttons */
+		BUTTON_PREVIOUS_BLOCK,	//left
+		BUTTON_NEXT_BLOCK,	//right
+		/*BUTTON_PREVIOUS_LVL,
+		BUTTON_NEXT_LVL,
+		BUTTON_SELECT_NEW_MAP,
+		BUTTON_CHANGE_TILE_MAP,*/
+
+		TOTAL_BUTTON,
 	};
 
 	/** States **/

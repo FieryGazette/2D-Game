@@ -32,6 +32,7 @@ public:
 
 /*********** vectors ***********/
 	vector<UI_Object*> UI_Object_List;
+	vector<Button*> Button_List;
 	vector<Object*> elementObject;	//sky, clouds stuff player cannot reach
 	static UI_Object* cursor;
 

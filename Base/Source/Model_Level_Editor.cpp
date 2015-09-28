@@ -35,6 +35,7 @@ void Model_Level_Editor::Init()
 
 	/* UI Vector resize */
 	UI_Object_List.resize(TOTAL_UI);
+	Button_List.resize(TOTAL_BUTTON);
 
 	/** Compulsory **/
 	UI_Object_List[UI_CURSOR] = cursor;
@@ -45,7 +46,7 @@ void Model_Level_Editor::Init()
 	
 	/* blocks selector bar */
 	UI_Object_List[UI_BLOCK_SELECTION_BAR] = new UI_Object;
-	UI_Object_List[UI_BLOCK_SELECTION_BAR]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_BLUE], 
+	UI_Object_List[UI_BLOCK_SELECTION_BAR]->Set(Geometry::meshList[Geometry::GEO_CUBE_BLUE], 
 		m_2D_view_width, m_2D_view_height * 0.1f, m_2D_view_width * 0.5f, m_2D_view_height * 0.05f, z, true);
 	z += 1.05f;
 
@@ -58,32 +59,31 @@ void Model_Level_Editor::Init()
 	z += 0.05f;
 
 	/* Buttons for block */
-	UI_Object_List[BUTTON_PREVIOUS_BLOCK] = new UI_Object;
-	UI_Object_List[BUTTON_PREVIOUS_BLOCK]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
+	Button_List[BUTTON_PREVIOUS_BLOCK] = new Button;
+	Button_List[BUTTON_PREVIOUS_BLOCK]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
 		15.f, 10.f, 8.f, 5.5f, z, true);
 	z += 0.05f;
 
-	UI_Object_List[BUTTON_NEXT_BLOCK] = new UI_Object;
-	UI_Object_List[BUTTON_NEXT_BLOCK]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
+	Button_List[BUTTON_NEXT_BLOCK] = new Button;
+	Button_List[BUTTON_NEXT_BLOCK]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
 		15.f, 10.f, 152.f, 5.5f, z, true);
 	z += 0.05f;
 
 	/* side bar (select current map and layer) */
 	UI_Object_List[UI_SIDE_BAR] = new UI_Object;
-	UI_Object_List[UI_SIDE_BAR]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_RED], 
+	UI_Object_List[UI_SIDE_BAR]->Set(Geometry::meshList[Geometry::GEO_CUBE_RED], 
 		18.f, m_2D_view_height * 0.9f, 9.f, m_2D_view_height * 0.55f, z, true);
 	z += 0.05f;
 
 	/* pop-up for selecting tile map */
 	UI_Object_List[UI_SELECT_TILEMAP_MENU] = new UI_Object;
-	UI_Object_List[UI_SELECT_TILEMAP_MENU]->Set("ASD", Geometry::meshList[Geometry::GEO_CUBE_GREEN], 
+	UI_Object_List[UI_SELECT_TILEMAP_MENU]->Set(Geometry::meshList[Geometry::GEO_CUBE_GREEN], 
 		m_2D_view_width * 0.85f, m_2D_view_height * 0.85f, m_2D_view_width * 0.5f, m_2D_view_height * 0.5f, z, false);
 	z += 0.05f;
 
 	/** Blocks **/
 	shiftBlock_Left = shiftBlock_Right = false;
 	moveBlock.Set(20.f);	//accelerate/decelerate when shifting left/right
-
 
 	/** Action **/
 	currentAction = NONE;
@@ -186,10 +186,9 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 	case EDIT_LAYER:
 
 		/** Edit tiles **/
-			/******************************** Set start and end for collision check with cursor ********************************/
 		start = cursor->getPosition() - cursor->getScale() * 0.5f;
 		end = cursor->getPosition() + cursor->getScale() * 0.5f;
-
+	
 		/******************************** If hit and click layer option, current layer selected ********************************/
 
 		/******************************** If hit and click checkbox beside layer option, layer turn invisible/not visible ********************************/
@@ -200,7 +199,7 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 			if( currentAction != SELECTING_TILES )
 			{
 				//right
-				if( cursor->CollisionDetection(UI_Object_List[BUTTON_NEXT_BLOCK]) )
+				if( Button_List[BUTTON_NEXT_BLOCK]->CollisionDetection(cursor) )
 				{
 					currentAction = SELECTING_TILES;
 					newPos = tile_startPos;
@@ -208,36 +207,37 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 				}
 	
 				//left
-				else if( cursor->CollisionDetection(UI_Object_List[BUTTON_PREVIOUS_BLOCK]) )
+				else if( Button_List[BUTTON_PREVIOUS_BLOCK]->CollisionDetection(cursor) )
 				{
 					currentAction = SELECTING_TILES;
 					newPos = tile_startPos;
 					newPos.x -= 60;
 				}
 			}
-		}
 
-		/******************************** If click on a tile, that tile is selected ********************************/
-		if( currentAction != SELECTING_TILES )
-		{
-			Collision::setStartEnd2D(tile_startPos, tileScale, checkStart, checkEnd);
-
-			/** Check collide with all blocks **/
-			for(int i = 1; i <= Geometry::tileMap_List[current_TileMap].totalTiles; ++i)
+			/** If check is not SELECTING_TILES again in case in this frame click button and a tile together **/
+			if( currentAction != SELECTING_TILES )
 			{
-				if( Collision::QuickAABBDetection2D(start, end, checkStart, checkEnd) )
+		
+				/******************************** If click on a tile, that tile is selected ********************************/
+				Collision::setStartEnd2D(tile_startPos, Vector3(tileScale, tileScale, tileScale), checkStart, checkEnd);
+			
+				/** Check collide with all blocks **/
+				for(int i = 1; i <= Geometry::tileMap_List[current_TileMap].totalTiles; ++i)
 				{
-					if( myKeys[SHOOT] )	//if  l click
+					if( Collision::QuickAABBDetection2D(start, end, checkStart, checkEnd) )
+					{
 						currentBlock = i;
-					break;
-				}
+						break;
+					}
 
-				/** If no collide, go further to next block **/
-				checkStart.x += tileSpacing;
-				checkEnd.x += tileSpacing;
+					/** If no collide, go further to next block **/
+					checkStart.x += tileSpacing;
+					checkEnd.x += tileSpacing;
+				}
 			}
 		}
-
+		
 		/******************************** Check cursor pos.x / tileSize and cursor pos.y / tileSize to get current tile ********************************/
 
 		/******************************** Left click == add tile ********************************/
@@ -259,6 +259,12 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 		/** Choose the tile map **/
 
 		break;
+	}
+
+	/******************************** Update any neccessary stuff ********************************/
+	for(int i = 0; i < Button_List.size(); ++i)
+	{
+		Button_List[i]->UpdateButton(dt);
 	}
 }
 

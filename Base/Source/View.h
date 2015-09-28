@@ -13,6 +13,7 @@
 
 /**
  Everything in view class will be using Objects class for TRS and other info
+ !!IS Utility functions not suppose to be in this class?
  **/
 class View
 {
@@ -135,6 +136,11 @@ public:
 	//render text with cutoff: add slash to part where supposed to go to next line
 	void RenderTextOnScreenCutOff(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
+
+	/* Utilities */
+	void RenderObject();
+	void RenderUI();
+	void RenderButton();
 
 /********************** Getter/setter *****************************/
 	static unsigned short getScreenHeight();

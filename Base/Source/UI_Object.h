@@ -15,7 +15,7 @@ public:
 	~UI_Object();
 
 	/*** core ***/
-	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
+	void Set(Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
 	void Init();
 
 	virtual bool CollisionDetection(UI_Object* checkMe);
@@ -30,9 +30,6 @@ public:
 	void SetScale(Vector3 scale);
 	Vector3 getScale();
 
-	void SetWord(string word);
-	string getWord();
-
 	bool getActive();
 	void SetActive(bool active);
 
@@ -40,7 +37,6 @@ public:
 
 protected:
 	bool active;
-	string word;
 	Vector3 position, scale;
 	Mesh* mesh;
 
@@ -61,10 +57,15 @@ public:
 	~Button();
 
 	/*** core ***/
+	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
 	virtual bool CollisionDetection(UI_Object* checkMe);
 	void UpdateButton(double dt);
 
+	/*** Getter/setter ***/
+	void SetWord(string word);
+	string getWord();
 private:
+	string word;
 	static double depressionTime;
 	static Vector3 depressionPercentage;
 	bool clicked;

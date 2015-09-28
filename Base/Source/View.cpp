@@ -337,6 +337,72 @@ void View::StartRendering(const float fps)
 	this->fps = fps;
 }
 
+/* Utilities */
+void View::RenderObject()
+{
+	/* Renders all objects */
+	for(vector<Object*>::iterator it = model->getObject()->begin(); it != model->getObject()->end(); ++it)
+	{
+		Object* o = (Object*)*it;
+
+		if( o->getActive() )
+		{
+			modelStack.PushMatrix();
+			modelStack.LoadMatrix( *(o->getTRS()) );
+			RenderMesh(o->getMesh(), false);
+			modelStack.PopMatrix();
+		}
+	}
+}
+
+Vector3 pos11, scale11;
+string word11;
+void View::RenderUI()
+{
+	/*************** Render UI ***************/
+	UI_Object* u;
+	
+	for(vector<UI_Object*>::iterator it = model->UI_Object_List.begin(); it != model->UI_Object_List.end(); ++it)
+	{
+		u = (UI_Object*)*it;
+
+		if( u->getActive() )
+		{
+			pos11 = u->getPosition();
+			scale11 = u->getScale();
+
+			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, pos11.z, 0);
+		}
+	}
+}
+
+void View::RenderButton()
+{
+	/*************** Render Button ***************/
+	Button* v;
+	
+	for(vector<Button*>::iterator it = model->Button_List.begin(); it != model->Button_List.end(); ++it)
+	{
+		v = (Button*)*it;
+
+		if( v->getActive() )
+		{
+			pos11 = v->getPosition();
+			scale11 = v->getScale();
+
+			RenderMeshIn2D(v->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, pos11.z, 0);
+		}
+
+		/** word **/
+		word11 = v->getWord();
+		if( word11.length() > 0 )
+		{
+			RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], word11, Color(61.f / 255.f, 209.f / 255.f, 189.f / 255.f), v->getScale().y * 0.3f, 
+				pos11.x, pos11.y, pos11.z + 0.01f);
+		}
+	}
+}
+
 void View::Exit()
 {
 	// Cleanup VBO

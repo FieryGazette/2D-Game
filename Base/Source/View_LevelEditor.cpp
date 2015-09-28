@@ -19,27 +19,18 @@ void View_Level_Editor::Init()
 	View::StartInit();
 }
 
-Vector3 pos11, scale11;
 void View_Level_Editor::Render(const float fps)
 {
+	Vector3 pos11, scale11;
+
 	/* Set up basic stuff */
 	View::StartRendering(fps);
 
-	/*************** Render UI ***************/
-	UI_Object* u;
-	
-	for(vector<UI_Object*>::iterator it = model->UI_Object_List.begin(); it != model->UI_Object_List.end(); ++it)
-	{
-		u = (UI_Object*)*it;
+	/** UI **/
+	RenderUI();
 
-		if(u->getActive())
-		{
-			pos11 = u->getPosition();
-			scale11 = u->getScale();
-
-			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, pos11.z, 0);
-		}
-	}
+	/** Button **/
+	RenderButton();
 
 	/*************** Render TileMap ***************/
 	//Geometry::TILE_MAP current_TileMap;	//current tilemap to use

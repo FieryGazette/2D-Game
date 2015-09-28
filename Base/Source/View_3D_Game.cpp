@@ -66,23 +66,6 @@ void View_3D_Game::RenderHUD()
 	}
 }
 
-void View_3D_Game::RenderObject()
-{
-	/* Renders all objects */
-	for(vector<Object*>::iterator it = model->getObject()->begin(); it != model->getObject()->end(); ++it)
-	{
-		Object* o = (Object*)*it;
-
-		if(o->getActive())
-		{
-			modelStack.PushMatrix();
-			modelStack.LoadMatrix( *(o->getTRS()) );
-			RenderMesh(o->getMesh(), false);
-			modelStack.PopMatrix();
-		}
-	}
-}
-
 void View_3D_Game::SetModel(Model_Gameplay* model)
 {
 	this->model = model;

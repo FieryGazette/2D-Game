@@ -11,9 +11,8 @@ UI_Object::~UI_Object()
 }
 
 /*** core ***/
-void UI_Object::Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active)
+void UI_Object::Set(Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active)
 {
-	this->word = word;
 	this->position.Set(posX, posY, zHeight);
 	this->scale.Set(scaleX, scaleY, 1.f);
 	this->mesh = mesh;
@@ -62,16 +61,6 @@ Vector3 UI_Object::getScale()
 	return scale;
 }
 
-void UI_Object::SetWord(string word)
-{
-	this->word = word;
-}
-
-string UI_Object::getWord()
-{
-	return word;
-}
-
 Mesh* UI_Object::getMesh()
 {
 	return mesh;
@@ -90,6 +79,26 @@ void UI_Object::SetActive(bool active)
 /** Button **/
 double Button::depressionTime = 0.2f;
 Vector3 Button::depressionPercentage(0.1, 0.1, 0);
+
+/*** constructor / destructor ***/
+Button::Button()
+{
+	depressionTimer = 0.0;
+}
+
+Button::~Button()
+{
+}
+
+/*** core ***/
+void Button::Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active)
+{
+	this->word = word;
+	this->position.Set(posX, posY, zHeight);
+	this->scale.Set(scaleX, scaleY, 1.f);
+	this->mesh = mesh;
+	this->active = active;
+}
 
 bool Button::CollisionDetection(UI_Object* checkMe)
 {
@@ -118,4 +127,14 @@ void Button::UpdateButton(double dt)
 			clicked = false;
 		}
 	}
+}
+
+void Button::SetWord(string word)
+{
+	this->word = word;
+}
+
+string Button::getWord()
+{
+	return word;
 }
