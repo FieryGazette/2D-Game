@@ -483,10 +483,21 @@ bool Collision::checkAABBCollide(Vector3& currentStart, Vector3& currentEnd, Vec
 		(currentEnd.z > checkStart.z && currentStart.z < checkEnd.z);
 }
 
+bool Collision::QuickAABBDetection2D(Vector3& currentStart, Vector3& currentEnd, Vector3& checkStart, Vector3& checkEnd)
+{
+	return (currentEnd.x > checkStart.x && currentStart.x < checkEnd.x) &&
+		(currentEnd.y > checkStart.y && currentStart.y < checkEnd.y);
+}
 
 bool Collision::checkSideCollide(Vector3& currentStart, Vector3& currentEnd, Vector3& checkStart, Vector3& checkEnd, bool x, bool y, bool z)
 {
 	return false;
+}
+
+void Collision::setStartEnd2D(const Vector3& pos, const Vector3& scale, Vector3& start, Vector3& end)
+{
+	start.Set(pos.x - scale.x * 0.5f, pos.y - scale.y * 0.5f, 0);
+	end.Set(pos.x + scale.x * 0.5f, pos.y + scale.y * 0.5f, 0);
 }
 
 void Collision::ResetAABB()

@@ -26,7 +26,7 @@ public:
 	~Map();
 
 	/* Core */
-	void AddLayer(const char* tileMapPath);
+	void AddLayer(Geometry::TILE_MAP tileMap);
 	//pass in index of layer, x pos and y pos
 	void AddTile(int layerIndex, int& x, int& y);
 	bool deleteLayer(int layerNum);

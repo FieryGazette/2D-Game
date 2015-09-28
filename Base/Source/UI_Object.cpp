@@ -1,4 +1,5 @@
 #include "UI_Object.h"
+Vector3 UI_Object::start, UI_Object::end, UI_Object::checkStart, UI_Object::checkEnd;
 
 /*** constructor / destructor ***/
 UI_Object::UI_Object()
@@ -22,6 +23,17 @@ void UI_Object::Set(string word, Mesh* mesh, float scaleX, float scaleY, float p
 void UI_Object::Init()
 {
 	//anything?
+}
+
+bool UI_Object::CollisionDetection(UI_Object* checkMe)
+{
+	/* Start and end */
+	start = position - scale * 0.5f;
+	end = position + scale * 0.5f;
+	checkStart = checkMe->position - checkMe->scale * 0.5f;
+	checkEnd = checkMe->position + checkMe->scale * 0.5f;
+
+	return Collision::QuickAABBDetection2D(start, end, checkStart, checkEnd);
 }
 
 /* particle */

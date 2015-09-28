@@ -62,6 +62,9 @@ public:
 	//!! optimise so not using vel and normal, just one variable (or better, none)
 	Vector3 vel;
 
+	/** Free Use **/
+	static bool QuickAABBDetection2D(Vector3& currentStart, Vector3& currentEnd, Vector3& checkStart, Vector3& checkEnd);
+	static void setStartEnd2D(const Vector3& pos, const Vector3& scale, Vector3& start, Vector3& end);
 private:
 	/*** Temporary storage variables ***/
 	/* AABB Collision */

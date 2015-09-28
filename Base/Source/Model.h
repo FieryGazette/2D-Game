@@ -11,6 +11,7 @@
 #include "Camera3.h"
 #include "readFrom.h"
 #include "writeTo.h"
+#include "Physics.h"
 #include <sstream>
 #include <vector>
 using namespace std;

@@ -1,6 +1,7 @@
 #ifndef LAYER_H
 #define LAYER_H
 #include "Tile.h"
+#include "MeshList.h"
 
 /*****************************************************************/
 /*
@@ -14,7 +15,7 @@ class Layer
 public:
 	/* Constructor/destructor */
 	Layer();
-	Layer(const char* filepath);
+	Layer(Geometry::TILE_MAP tileMap);
 	~Layer();
 
 	/* Core */
@@ -40,7 +41,7 @@ private:
 	vector<Tile*> TileMap;
 
 	/* tileMap */
-	const char* filepath;	//file path to the txt
+	Geometry::TILE_MAP tileMap;	//what tilemap
 };
 
 #endif

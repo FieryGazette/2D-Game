@@ -120,7 +120,7 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	vel *= dt;
 	/*translate(800, 800, 1);
 	vel.Set(-500, 500, 0);*/
-	cout << "Vel: " << vel << endl;
+
 	/* Set up collision */
 	object.StartChecking(vel);
 

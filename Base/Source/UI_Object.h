@@ -13,6 +13,8 @@ public:
 	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
 	void Init();
 
+	bool CollisionDetection(UI_Object* checkMe);
+
 	/* particle */
 	void Update(const double& dt, Vector3& playerPos);
 
@@ -36,6 +38,8 @@ private:
 	string word;
 	Vector3 position, scale;
 	Mesh* mesh;
+
+	static Vector3 start, end, checkStart, checkEnd;
 };
 
 #endif

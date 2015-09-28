@@ -10,8 +10,8 @@ public:
 	enum UI_LIST
 	{
 		/* Buttons */
-		BUTTON_PREVIOUS_BLOCK,
-		BUTTON_NEXT_BLOCK,
+		BUTTON_PREVIOUS_BLOCK,	//left
+		BUTTON_NEXT_BLOCK,	//right
 		/*BUTTON_PREVIOUS_LVL,
 		BUTTON_NEXT_LVL,
 		BUTTON_SELECT_NEW_MAP,
@@ -49,10 +49,21 @@ public:
 		DEFAULT,
 	};
 
+	/* If doing action, certain other stuff need to stop */
+	enum ACTIONS
+	{
+		SELECTING_TILES,
+		NONE,
+		TOTAL_ACTIONS,
+	};
+
+	ACTIONS currentAction;
+
 	/* TileMap stuff */
 	Geometry::TILE_MAP current_TileMap;	//current tilemap to use
 	int currentBlock;	//current block to add
 	Vector3 tile_startPos;	//starting pos of tiles
+	float tileSpacing;	//spacing for displaying tiles in editor
 	float tileScale;	//scale of tiles
 
 	/* Path for map file and tile map */
@@ -60,12 +71,19 @@ public:
 	string currentMapName;	//curent map
 	vector<Map*> mapList;
 	char* tileMapPath;
+
+	/* blocks */
+	Physics moveBlock;	//physics to move blocks
+	bool shiftBlock_Left, shiftBlock_Right;
+	Vector3 newPos;	//new pos to reach
 	
 	/* Internal */
 	STATE state;
 
 	/* Utilities */
 	static string name;
+	Vector3 start, end, checkStart, checkEnd;	//for collision
+	Vector3 pos, scale;
 
 /*********** constructor/destructor ***************/
 	Model_Level_Editor();

@@ -47,7 +47,7 @@ void Model::Init()
 
 	/* UI Object */
 	cursor = new UI_Object;
-	cursor->Set("Cursor", Geometry::meshList[Geometry::GEO_BACK], 
+	cursor->Set("Cursor", Geometry::meshList[Geometry::GEO_CUBE_GREEN], 
 		3.f, 3.f, 0.f, 0.f, 9.f, true);
 	
 	/* Name of map list .txt */

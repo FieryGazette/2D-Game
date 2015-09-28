@@ -58,7 +58,7 @@ void View_Level_Editor::Render(const float fps)
 			RenderMeshIn2D(Geometry::meshList[Geometry::GEO_SELECTOR], false, model->tileScale * 1.1f, model->tileScale * 1.1f, 1, pos11.x, pos11.y, pos11.z, 0);
 		}
 
-		pos11.x += 12.f;	//go towards x positive
+		pos11.x += model->tileSpacing;	//go towards x positive
 	}
 }
 

@@ -15,9 +15,9 @@ Map::~Map()
 }
 
 /* Core */
-void Map::AddLayer(const char* tileMapPath)
+void Map::AddLayer(Geometry::TILE_MAP tileMap)
 {
-	layer_ptr = new Layer(tileMapPath);
+	layer_ptr = new Layer(tileMap);
 	layerList.push_back(layer_ptr);
 	++totalLayers;
 

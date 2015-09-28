@@ -6,9 +6,9 @@ Layer::Layer()
 	edited = false;
 }
 
-Layer::Layer(const char* filepath)
+Layer::Layer(Geometry::TILE_MAP tileMap)
 {
-	this->filepath = filepath;
+	this->tileMap = tileMap;
 }
 
 Layer::~Layer()
