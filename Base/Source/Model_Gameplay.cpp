@@ -81,7 +81,7 @@ void Model_Gameplay::InitObject()
 	//for now Z will be 100 as z collision check not removed yet
 	//top
 	obj_ptr = new Object;
-	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL);
 
 	//RIGHT
 	obj_ptr->translateObject(2200, 750, -1.f);	//start at right side of box (going top left initially)
@@ -91,7 +91,7 @@ void Model_Gameplay::InitObject()
 
 	/* WALL 2 */
 	obj_ptr = new Object;
-	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL);
 	
 	//TOP
 	obj_ptr->translateObject(m_view_width * 0.5f, 1500, -1.f);	//start at right side of box (going top left initially)
@@ -102,7 +102,7 @@ void Model_Gameplay::InitObject()
 
 	/* WALL 3 */
 	obj_ptr = new Object;
-	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL);
 	
 	//LEFT
 	obj_ptr->translateObject(200, 750, -1.f);	//start at right side of box (going top left initially)
@@ -113,7 +113,7 @@ void Model_Gameplay::InitObject()
 
 	/* WALL 4 */
 	obj_ptr = new Object;
-	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL);
 	
 	//BOTTOM
 	obj_ptr->translateObject(m_view_width * 0.5f, 50, -1.f);	//start at right side of box (going top left initially)
@@ -123,7 +123,7 @@ void Model_Gameplay::InitObject()
 
 	/* WALL 5 */
 	obj_ptr = new Object;
-	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_GREEN], NULL, false, false);
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_GREEN], NULL);
 
 	//BOTTOM
 	obj_ptr->translateObject(696.40192, 1222.2026, -1.f);	//start at right side of box (going top left initially)
@@ -133,7 +133,7 @@ void Model_Gameplay::InitObject()
 
 	/* WALL 6 */
 	obj_ptr = new Object;
-	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_GREEN], NULL, false, false);
+	obj_ptr->Set("character", Geometry::meshList[Geometry::GEO_CUBE_GREEN], NULL);
 
 	//BOTTOM
 	obj_ptr->translateObject(849.0, 1222.2026, -1.f);	//start at right side of box (going top left initially)

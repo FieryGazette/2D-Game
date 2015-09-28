@@ -2,6 +2,11 @@
 #define UI_OBJECT_H
 #include "Object.h"
 
+/**/
+/*
+	Create general UI stuff.
+*/
+/**/
 class UI_Object
 {
 public:
@@ -13,7 +18,7 @@ public:
 	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
 	void Init();
 
-	bool CollisionDetection(UI_Object* checkMe);
+	virtual bool CollisionDetection(UI_Object* checkMe);
 
 	/* particle */
 	void Update(const double& dt, Vector3& playerPos);
@@ -33,13 +38,37 @@ public:
 
 	Mesh* getMesh();
 
-private:
+protected:
 	bool active;
 	string word;
 	Vector3 position, scale;
 	Mesh* mesh;
 
 	static Vector3 start, end, checkStart, checkEnd;
+};
+
+/**/
+/*
+	Button. Click on it will 'depress' it for a certain amount of time before
+	popping back up.
+*/
+/**/
+class Button : public UI_Object
+{
+public:
+	/*** constructor / destructor ***/
+	Button();
+	~Button();
+
+	/*** core ***/
+	virtual bool CollisionDetection(UI_Object* checkMe);
+	void UpdateButton(double dt);
+
+private:
+	static double depressionTime;
+	static Vector3 depressionPercentage;
+	bool clicked;
+	double depressionTimer;
 };
 
 #endif

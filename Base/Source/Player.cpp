@@ -24,7 +24,7 @@ void Player::Init(Vector3 pos, Vector3 scale, DIRECTION facingDir, float health,
 	sprite->init(0.1f, 0, 4, 7, 4, false);
 
 	/* Character */
-	object.Set("character", sprite, NULL, false, false);
+	object.Set("character", sprite, NULL);
 	object.translateObject(pos);	//start at right side of box (going top left initially)
 	object.scaleObject(scale.x, scale.y, scale.z);
 
@@ -36,7 +36,7 @@ void Player::Init(Vector3 pos, Vector3 scale, DIRECTION facingDir, float health,
 
 void Player::SetToNewMap(Vector3 pos, Map& currentMap)
 {
-	object.position = pos;
+	object.translateObject(pos);
 }
 
 double changeRate = 0.05;
@@ -128,8 +128,8 @@ void Player::Update(double dt, bool* myKeys, vector<Object*>& objectLists)
 	{
 		if(&object != objectLists[i])
 		{
-			if(objectLists[i]->active)
-				object.checkCollision2(*objectLists[i]);
+			if(objectLists[i]->getActive())
+				object.checkCollision(*objectLists[i]);
 		}
 	}
 

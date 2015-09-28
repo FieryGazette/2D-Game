@@ -121,7 +121,7 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 	if( myKeys[SHOOT] )	//first time come this mode
 	{
 		//ADD_NEW_MAP
-		state = DEFAULT;
+		state = EDIT_LAYER;
 	}
 
 	switch ( state )
@@ -184,82 +184,81 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 			break;
 		}
 	case EDIT_LAYER:
+
 		/** Edit tiles **/
+			/******************************** Set start and end for collision check with cursor ********************************/
+		start = cursor->getPosition() - cursor->getScale() * 0.5f;
+		end = cursor->getPosition() + cursor->getScale() * 0.5f;
+
+		/******************************** If hit and click layer option, current layer selected ********************************/
+
+		/******************************** If hit and click checkbox beside layer option, layer turn invisible/not visible ********************************/
+
+		/******************************** If hit right arrow, scroll right, if hit left arrow, scroll left ********************************/
+		if( myKeys[SHOOT] )
+		{
+			if( currentAction != SELECTING_TILES )
+			{
+				//right
+				if( cursor->CollisionDetection(UI_Object_List[BUTTON_NEXT_BLOCK]) )
+				{
+					currentAction = SELECTING_TILES;
+					newPos = tile_startPos;
+					newPos.x += 60;
+				}
+	
+				//left
+				else if( cursor->CollisionDetection(UI_Object_List[BUTTON_PREVIOUS_BLOCK]) )
+				{
+					currentAction = SELECTING_TILES;
+					newPos = tile_startPos;
+					newPos.x -= 60;
+				}
+			}
+		}
+
+		/******************************** If click on a tile, that tile is selected ********************************/
+		if( currentAction != SELECTING_TILES )
+		{
+			Collision::setStartEnd2D(tile_startPos, tileScale, checkStart, checkEnd);
+
+			/** Check collide with all blocks **/
+			for(int i = 1; i <= Geometry::tileMap_List[current_TileMap].totalTiles; ++i)
+			{
+				if( Collision::QuickAABBDetection2D(start, end, checkStart, checkEnd) )
+				{
+					if( myKeys[SHOOT] )	//if  l click
+						currentBlock = i;
+					break;
+				}
+
+				/** If no collide, go further to next block **/
+				checkStart.x += tileSpacing;
+				checkEnd.x += tileSpacing;
+			}
+		}
+
+		/******************************** Check cursor pos.x / tileSize and cursor pos.y / tileSize to get current tile ********************************/
+
+		/******************************** Left click == add tile ********************************/
+
+		/******************************** Right click == remove the tile ********************************/
+
+		/******************************** Shift blocks ********************************/
+		if( currentAction == SELECTING_TILES )
+		{
+			//opp. since move function returns false when still moving and true if reached
+			if( moveBlock.Move(tile_startPos, 220.5f, newPos, dt) )
+			{
+				currentAction = NONE;
+			}
+		}
 
 		break;
 	case CHOOSE_TILE_MAP:
 		/** Choose the tile map **/
 
 		break;
-	}
-
-	/************************ Default case ************************/
-	/******************************** Set start and end for collision check with cursor ********************************/
-	start = cursor->getPosition() - cursor->getScale() * 0.5f;
-	end = cursor->getPosition() + cursor->getScale() * 0.5f;
-
-	/******************************** If hit and click layer option, current layer selected ********************************/
-
-	/******************************** If hit and click checkbox beside layer option, layer turn invisible/not visible ********************************/
-
-	/******************************** If hit right arrow, scroll right, if hit left arrow, scroll left ********************************/
-	if( myKeys[SHOOT] )
-	{
-		if( currentAction != SELECTING_TILES )
-		{
-			//right
-			if( cursor->CollisionDetection(UI_Object_List[BUTTON_NEXT_BLOCK]) )
-			{
-				currentAction = SELECTING_TILES;
-				newPos = tile_startPos;
-				newPos.x += 60;
-			}
-	
-			//left
-			else if( cursor->CollisionDetection(UI_Object_List[BUTTON_PREVIOUS_BLOCK]) )
-			{
-				currentAction = SELECTING_TILES;
-				newPos = tile_startPos;
-				newPos.x -= 60;
-			}
-		}
-	}
-
-	/******************************** If click on a tile, that tile is selected ********************************/
-	if( currentAction != SELECTING_TILES )
-	{
-		Collision::setStartEnd2D(tile_startPos, tileScale, checkStart, checkEnd);
-
-		/** Check collide with all blocks **/
-		for(int i = 1; i <= Geometry::tileMap_List[current_TileMap].totalTiles; ++i)
-		{
-			if( Collision::QuickAABBDetection2D(start, end, checkStart, checkEnd) )
-			{
-				if( myKeys[SHOOT] )	//if  l click
-					currentBlock = i;
-				break;
-			}
-
-			/** If no collide, go further to next block **/
-			checkStart.x += tileSpacing;
-			checkEnd.x += tileSpacing;
-		}
-	}
-
-	/******************************** Check cursor pos.x / tileSize and cursor pos.y / tileSize to get current tile ********************************/
-
-	/******************************** Left click == add tile ********************************/
-
-	/******************************** Right click == remove the tile ********************************/
-
-	/******************************** Shift blocks ********************************/
-	if( currentAction == SELECTING_TILES )
-	{
-		//opp. since move function returns false when still moving and true if reached
-		if( moveBlock.Move(tile_startPos, 220.5f, newPos, dt) )
-		{
-			currentAction = NONE;
-		}
 	}
 }
 

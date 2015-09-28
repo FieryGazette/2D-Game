@@ -86,3 +86,36 @@ void UI_Object::SetActive(bool active)
 {
 	this->active = active;
 }
+
+/** Button **/
+double Button::depressionTime = 0.2f;
+Vector3 Button::depressionPercentage(0.1, 0.1, 0);
+
+bool Button::CollisionDetection(UI_Object* checkMe)
+{
+	/* Start and end */
+	bool b = UI_Object::CollisionDetection(checkMe);
+
+	if( b )
+	{
+		clicked = true;
+		position -= depressionPercentage.Dot(scale);
+	}
+
+	return b;
+}
+
+void Button::UpdateButton(double dt)
+{
+	if( clicked )
+	{
+		depressionTimer += dt;
+
+		if( depressionTimer >= depressionTime )
+		{
+			depressionTimer = 0.f;
+			position += depressionPercentage.Dot(scale);
+			clicked = false;
+		}
+	}
+}

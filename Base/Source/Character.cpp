@@ -26,12 +26,12 @@ void Character::Update(double dt)
 /* Getter/Setter */
 Vector3 Character::getPosition()
 {
-	return object.position;
+	return object.getPosition();
 }
 
 Vector3 Character::getScale()
 {
-	return object.scale;
+	return object.getScale();
 }
 
 Mesh* Character::getMesh()

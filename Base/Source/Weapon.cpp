@@ -24,7 +24,7 @@ Ammo* Weapon::FetchAmmo()
 	/* get ammo */
 	for(int i = 0; i < ammoList.size(); ++i)
 	{
-		if( !ammoList[i]->active )
+		if( !ammoList[i]->getActive() )
 		{
 			ammoList[i]->setActive(true);
 			return ammoList[i];
@@ -81,7 +81,7 @@ void Weapon::UpdateAmmos(vector<Object*>& objectList)
 	//loop thru all and update
 	for(int i = 0; i < ammoList.size(); ++i)
 	{
-		if( ammoList[i]->active )
+		if( ammoList[i]->getActive() )
 			ammoList[i]->Update(objectList);
 	}
 }

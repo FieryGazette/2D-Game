@@ -35,7 +35,7 @@ void View_3D_Game::RenderCollideBox()
 	{
 		Object* o = (Object*)*it;
 
-		if( !o->active )
+		if( !o->getActive() )
 			continue;
 
 		modelStack.PushMatrix();
@@ -77,7 +77,7 @@ void View_3D_Game::RenderObject()
 		{
 			modelStack.PushMatrix();
 			modelStack.LoadMatrix( *(o->getTRS()) );
-			RenderMesh(o->getMesh(), o->getLight());
+			RenderMesh(o->getMesh(), false);
 			modelStack.PopMatrix();
 		}
 	}

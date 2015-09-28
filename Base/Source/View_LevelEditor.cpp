@@ -68,7 +68,7 @@ void View_Level_Editor::RenderCollideBox()
 	{
 		Object* o = (Object*)*it;
 
-		if( !o->active )
+		if( !o->getActive() )
 			continue;
 
 		modelStack.PushMatrix();
@@ -91,7 +91,7 @@ void View_Level_Editor::RenderObject()
 		{
 			modelStack.PushMatrix();
 			modelStack.LoadMatrix( *(o->getTRS()) );
-			RenderMesh(o->getMesh(), o->getLight());
+			RenderMesh(o->getMesh(), false);
 			modelStack.PopMatrix();
 		}
 	}

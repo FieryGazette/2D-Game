@@ -26,11 +26,11 @@ Ammo::~Ammo()
 void Ammo::Init(AMMO_TYPE type)
 {
 	this->type = type;
-	Set("Bullet", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL, false, false);
+	Set("Bullet", Geometry::meshList[Geometry::GEO_CUBE_BLUE], NULL);
 	translateObject(0, 0, 2);	//z is higer than many other stuff
 	scaleObject(50, 50, 50);
 	collide = false;
-	active = false;
+	entity.setActive(false);
 }
 
 //pass in the relavant info variables and they will be updated
@@ -51,10 +51,10 @@ void Ammo::Update(vector<Object*>& objectList)
 	collide = false;
 	for(int i = 0; i < objectList.size(); ++i)
 	{
-		if( this == objectList[i] || !objectList[i]->active )
+		if( this == objectList[i] || !objectList[i]->getActive() )
 			continue;
 
-		if( checkCollision2(*objectList[i]) )	//hit something
+		if( checkCollision(*objectList[i]) )	//hit something
 		{
 			//response: zombie dies
 			collide = true;
