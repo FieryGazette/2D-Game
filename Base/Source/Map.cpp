@@ -2,7 +2,6 @@
 float Map::offset = 0.1f;
 Layer* Map::layer_ptr = NULL;
 Vector3 Map::global_vec;
-Tile* Map::tile_ptr = NULL;
 
 /* Constructor/destructor */
 Map::Map(string name)
@@ -15,28 +14,40 @@ Map::~Map()
 }
 
 /* Core */
-void Map::AddLayer(Geometry::TILE_MAP tileMap)
+void Map::AddLayer(bool collidable, float tileScale)
 {
-	layer_ptr = new Layer(tileMap);
+	layer_ptr = new Layer;
 	layerList.push_back(layer_ptr);
 	++totalLayers;
 
-	/* Load tilemap o this layer */
-	layer_ptr->LoadTileLayer();
+	layerList.back()->Set(Geometry::TILEMAP_NATURE, totalLayers - 1, collidable, tileScale); 
 }
 
 bool Map::deleteLayer(int layerNum)
 {
+	if( layerNum < 0 || layerNum >= totalLayers)
+		return false;
+
 	layerList[layerNum]->Clear();
 	delete layerList[layerNum];
 	layerList.pop_back();
-
+	--totalLayers;
 	return true;
 }
 
-void Map::AddTile(int layerIndex, int& x, int& y)
+void Map::RecreateLayer(Geometry::TILE_MAP tileMap, int layer, int totalX, int totalY)
 {
-	layerList[layerIndex]->addTile(x, y);
+	if(layer < 0 || layer >= totalLayers)
+		return;
+
+	layerList[layer]->Clear();
+
+	layerList[layer]->RecreateLayer(tileMap, totalX, totalY);
+}
+
+void Map::EditLayer(int layerIndex, int tileType, int& x, int& y)
+{
+	layerList[layerIndex]->editTile(x, y, tileType);
 }
 
 void Map::Clear()
@@ -49,19 +60,14 @@ void Map::Clear()
 }
 
 /* Get data */
-void Map::GetPosOfTile(int layerIndex, int tileIndex, Vector3& pos)
-{
-	layerList[layerIndex]->GetTilePos(tileIndex, pos);
-}
-
 float Map::getTileSize(int layerIndex)
 {
-	return layerList[layerIndex]->getTileSize();
+	return 0;
 }
 
 int Map::getLayerSize(int layerIndex)	
 {
-	return layerList[layerIndex]->getTotalTiles();
+	return 0;
 }
 
 int Map::getMapSize()	

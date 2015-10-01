@@ -16,6 +16,18 @@
 #include <vector>
 using namespace std;
 
+
+/*************************************************************/
+/*
+	Contains:
+		vectors of various game objects.
+		individual game objects.
+		other info.
+
+	Function:
+		Manipulates the active state of game objects based on key inputs, events etc.
+*/
+/*************************************************************/
 class Model
 {
 public:
@@ -79,6 +91,7 @@ public:
 	void InitMesh();
 
 	virtual void NewStateSetup();	//if changing state, call this function so new state can init stuff
+	virtual void OldStateExit();	//if changing state, call this function so previous state can exit
 	virtual void Update(double dt, bool* myKeys, Vector3& cursorPos);
 	void UpdateOpenGL(double dt, bool* myKeys);
 	void UpdateFOV(double dt, bool* myKeys);

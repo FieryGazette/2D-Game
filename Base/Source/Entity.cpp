@@ -175,6 +175,7 @@ Mesh* Entity::getMesh(){return mesh;}
 Vector3 Entity::getScale(){return scale;}
 Vector3 Entity::getPosition(){return position;}
 Entity* Entity::getParent(){return parent;}
+void Entity::setParent(Entity* parent){this->parent = parent;}
 Mtx44* Entity::getTRS(){return &TRS;}
 void Entity::setActive(bool b){active = b;}
 bool Entity::getActive(){return active;}

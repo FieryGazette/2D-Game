@@ -77,3 +77,57 @@ int stringToInt(string& num)
 
 	return numm;
 }
+
+int getNumberFromRange(string& original)
+{
+	bool start = false;
+
+	string returnVal = "";
+
+	for(int i = 0; i < original.length(); ++i)
+	{
+		if( original[i] >= '0' && original[i] <= '9' )
+		{
+			start = true;
+			returnVal += original[i];
+		}
+		else
+		{
+			if( start )
+				break;	//reach end of number
+		}
+	}
+
+	return stringToInt(returnVal);
+}
+
+int getNumberFromRange(string& original, int skip)
+{
+	bool start = false;
+
+	string returnVal = "";
+
+	for(int i = 0; i < original.length(); ++i)
+	{
+		if( original[i] >= '0' && original[i] <= '9' )
+		{
+			start = true;
+			returnVal += original[i];
+		}
+		else
+		{
+			if( start )
+			{
+				if( skip == 0 )
+					break;
+				else
+				{
+					returnVal = "";
+					--skip;
+				}
+			}
+		}
+	}
+
+	return stringToInt(returnVal);
+}

@@ -162,6 +162,14 @@ void Model_Gameplay::Update(double dt, bool* myKeys, Vector3& cursorPos)
 
 }
 
+void Model_Gameplay::NewStateSetup()
+{
+}
+
+void Model_Gameplay::OldStateExit()
+{
+}
+
 void Model_Gameplay::Exit()
 {
 	Model::Exit();

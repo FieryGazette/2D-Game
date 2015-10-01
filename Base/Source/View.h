@@ -11,10 +11,16 @@
 //Include GLFW
 #include <GLFW/glfw3.h>
 
-/**
- Everything in view class will be using Objects class for TRS and other info
- !!IS Utility functions not suppose to be in this class?
- **/
+/*************************************************************/
+/*
+	Contains:
+		Model pointer to point to current model to render
+
+	Function:
+		Render and object if active.
+		Custom render specific stuff dictated by the model
+*/
+/*************************************************************/
 class View
 {
 private:
@@ -125,9 +131,10 @@ public:
 	void RenderMeshInLines(Mesh* mesh, const Vector3& position, const Vector3& scale);
 
 	/* 2D */
-	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex=1.0f, float sizey = 1.0f, float sizez = 1.0f, float x=0.0f, float y=0.0f, float z = 0.f, float angle = 0.f);
+	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex=1.0f, float sizey = 1.0f, float x=0.0f, float y=0.0f, float z = 0.f, float angle = 0.f);
 	void Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, float z, int tileType);
-
+	void RenderMeshIn2D(Mesh *mesh, bool enableLight, Mtx44& TRS);
+	
 	/* Text */
 	//3D
 	void RenderText(Mesh* mesh, std::string text, Color color);

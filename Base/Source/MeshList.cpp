@@ -106,6 +106,17 @@ void Geometry::Init()
 	tileMap_List[TILEMAP_NATURE].mesh->textureID[0] = LoadTGA("Image//tile2_ground.tga");
 	tileMap_List[TILEMAP_NATURE].totalTiles = 8 * 8;	//num row * num col
 	tileMap_List[TILEMAP_NATURE].tileScale = 32.f;
+	tileMap_List[TILEMAP_NATURE].previewMesh = MeshBuilder::GenerateQuad("Tile Map preview", Color(1, 1, 1), 1.f);
+	tileMap_List[TILEMAP_NATURE].previewMesh->textureID[0] = LoadTGA("Image//tile2_ground.tga");
+
+	/* tile map */
+	tileMap_List[TILEMAP_MARKET].mesh = MeshBuilder::GenerateTileMap("Tile Map", Color(1, 1, 1), 32.f, 32.f, 16, 16);	//set the width/heignt of each tile same as the .tga w/h
+	tileMap_List[TILEMAP_MARKET].name = "Suck ma dick map";
+	tileMap_List[TILEMAP_MARKET].mesh->textureID[0] = LoadTGA("Image//tileset_02.tga");
+	tileMap_List[TILEMAP_MARKET].totalTiles = 16 * 16;	//num row * num col
+	tileMap_List[TILEMAP_MARKET].tileScale = 32.f;
+	tileMap_List[TILEMAP_MARKET].previewMesh = MeshBuilder::GenerateQuad("Tile Map preview", Color(1, 1, 1), 1.f);
+	tileMap_List[TILEMAP_MARKET].previewMesh->textureID[0] = LoadTGA("Image//tileset_02.tga");
 
 	animation.resize(2);	//2 animations
 

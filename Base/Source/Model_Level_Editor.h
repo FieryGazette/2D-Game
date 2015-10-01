@@ -6,13 +6,14 @@ class Model_Level_Editor : public Model
 {
 public:
 
+	/** vectors **/
+
 	/** UI List **/
 	enum UI_LIST
 	{
 		/* UIs */
 		UI_BLOCK_SELECTION_BAR,
 		UI_SIDE_BAR,
-		UI_SELECT_TILEMAP_MENU,
 
 		/* Model stuff (Compulsory, must add this section to all enums concerning UI_Object_List) */
 		UI_CURSOR,
@@ -25,10 +26,11 @@ public:
 		/* Buttons */
 		BUTTON_PREVIOUS_BLOCK,	//left
 		BUTTON_NEXT_BLOCK,	//right
+		BUTTON_CHANGE_TILE_MAP,
 		/*BUTTON_PREVIOUS_LVL,
 		BUTTON_NEXT_LVL,
 		BUTTON_SELECT_NEW_MAP,
-		BUTTON_CHANGE_TILE_MAP,*/
+		,*/
 
 		TOTAL_BUTTON,
 	};
@@ -65,6 +67,9 @@ public:
 	ACTIONS currentAction;
 
 	/* TileMap stuff */
+	Popup* tileMap_Menu;
+	Selection_Menu* tileSelectionMenu;
+
 	Geometry::TILE_MAP current_TileMap;	//current tilemap to use
 	int currentBlock;	//current block to add
 	Vector3 tile_startPos;	//starting pos of tiles
@@ -83,21 +88,37 @@ public:
 	Vector3 newPos;	//new pos to reach
 	
 	/* Internal */
-	STATE state;
+	STATE state, previousState;
 
 	/* Utilities */
+	UI_Object useMe;	//for general usage
 	static string name;
 	Vector3 start, end, checkStart, checkEnd;	//for collision
 	Vector3 pos, scale;
-
+	float z;
 /*********** constructor/destructor ***************/
 	Model_Level_Editor();
 	~Model_Level_Editor();
 
 /*********** core functions ***************/
 	virtual void Init();
+		void InitUtilities();
+		void InitAddNewMap();
+		void InitAddNewLayer();
+		void InitEditMap();
+		void InitEditLayer();
+		void InitChooseTileMap();
+
+		void PopulateMapsFromTxt();
+
 	virtual void NewStateSetup();
+	virtual void OldStateExit();
 	virtual void Update(double dt, bool* myKeys, Vector3& cursorPos);
+		void UpdateAddNewMap(double dt, bool* myKeys, Vector3& cursorPos);
+		void UpdateAddNewLayer(double dt, bool* myKeys, Vector3& cursorPos);
+		void UpdateEditLayer(double dt, bool* myKeys, Vector3& cursorPos);
+		void UpdateEditMap(double dt, bool* myKeys, Vector3& cursorPos);
+		void UpdateChooseTileMap(double dt, bool* myKeys, Vector3& cursorPos);
 
 	virtual void Exit();
 

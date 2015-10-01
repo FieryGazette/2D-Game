@@ -43,6 +43,14 @@ void Model_MainMenu::Update(double dt, bool* myKeys, Vector3& cursorPos)
 	Model::Update(dt, myKeys, cursorPos);
 }
 
+void Model_MainMenu::NewStateSetup()
+{
+}
+
+void Model_MainMenu::OldStateExit()
+{
+}
+
 void Model_MainMenu::Exit()
 {
 	Model::Exit();

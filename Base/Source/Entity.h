@@ -24,7 +24,7 @@ param:
 ***********************************************************/
 class Entity
 {
-private:
+protected:
 	/*** modifyable data ***/
 	Mesh* mesh;	//mesh to render (need?)
 	Vector3 scale;	//scale
@@ -42,7 +42,7 @@ public:
 	/*** core ***/
 	void Set(string name, Mesh* mesh, Entity* parent);
 	void AddParent(Entity* parent);
-	void Init();
+	virtual void Init();
 
 	/*** utilities ***/
 	void transformWithParent();	//position recalculated after transformation
@@ -61,6 +61,7 @@ public:
 	Vector3 getScale();
 	Vector3 getPosition();
 	Entity* getParent();
+	void setParent(Entity* parent);
 	Mtx44* getTRS();
 	void setActive(bool b);
 	bool getActive();

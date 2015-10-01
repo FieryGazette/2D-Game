@@ -107,7 +107,10 @@ void Model::Exit()
 
 void Model::NewStateSetup()
 {
+}
 
+void Model::OldStateExit()
+{
 }
 
 /*********** getter / setters ***************/

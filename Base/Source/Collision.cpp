@@ -294,35 +294,37 @@ bool Collision::SlideResponse(Collision* current, Collision* check)
 	if( broadPhrase(current->startingPos, originalPos, check->position, current->scale, check->scale) )
 	{
 		slideList.push_back(check);
-	}
-
-	/************************************ Check if box needs collision check (BroadPhrase test) ************************************/
-	if( !broadPhrase(current->startingPos, current->position, check->position, current->scale, check->scale) )
-	{
-		return false;
-	}
-
-	/************************************ Get velocity ************************************/
-	float CollisionTime = SweptAABB(*current, *check);
 	
-	/* No collision at all */
-	if(CollisionTime >= 1.f)
-	{
-		return false;
+
+		/************************************ Check if box needs collision check (BroadPhrase test) ************************************/
+		if( !broadPhrase(current->startingPos, current->position, check->position, current->scale, check->scale) )
+		{
+			return false;
+		}
+
+		/************************************ Get velocity ************************************/
+		float CollisionTime = SweptAABB(*current, *check);
+	
+		/* No collision at all */
+		if(CollisionTime >= 1.f)
+		{
+			return false;
+		}
+
+		/* collided set to true */
+	
+	
+		/* Theres collision */
+		/* Velocity multiply with collisionTime */
+		current->vel = originalVel;	//set it to original velocity
+		current->vel *= CollisionTime;
+		current->position = current->startingPos;
+		current->position += current->vel;
+		collided_Box = check;
+
+		return true;
 	}
-
-	/* collided set to true */
-	
-	
-	/* Theres collision */
-	/* Velocity multiply with collisionTime */
-	current->vel = originalVel;	//set it to original velocity
-	current->vel *= CollisionTime;
-	current->position = current->startingPos;
-	current->position += current->vel;
-	collided_Box = check;
-
-	return true;
+	return false;
 }
 
 bool Collision::broadPhrase(Vector3 originalPos, Vector3 finalPos, Vector3 checkPos, Vector3 currentScale, Vector3 checkScale)

@@ -371,7 +371,7 @@ void View::RenderUI()
 			pos11 = u->getPosition();
 			scale11 = u->getScale();
 
-			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, pos11.z, 0);
+			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, pos11.z, 0);
 		}
 	}
 }
@@ -390,7 +390,7 @@ void View::RenderButton()
 			pos11 = v->getPosition();
 			scale11 = v->getScale();
 
-			RenderMeshIn2D(v->getMesh(), false, scale11.x, scale11.y, 1, pos11.x, pos11.y, pos11.z, 0);
+			RenderMeshIn2D(v->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, pos11.z, 0);
 		}
 
 		/** word **/
@@ -719,7 +719,7 @@ void View::RenderMesh(Mesh *mesh, bool enableLight)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey, float sizez, float x, float y, float z, float angle)
+void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey, float x, float y, float z, float angle)
 {
 	Mtx44 ortho;
 	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
@@ -731,7 +731,47 @@ void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey
 	modelStack.LoadIdentity();
 	modelStack.Translate(x, y, z);
 	modelStack.Rotate(angle, 0, 0, 1);
-	modelStack.Scale(sizex, sizey, sizez);
+	modelStack.Scale(sizex, sizey, 1);
+
+	Mtx44 MVP, modelView, modelView_inverse_transpose;
+	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE,
+		&MVP.a[0]);
+	if(mesh->textureID[0] > 0)
+	{
+		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED],
+			1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID[0]);
+		glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	}
+	else
+	{
+		glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED],
+			0);
+	}
+	mesh->Render();
+	if(mesh->textureID[0] > 0)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	modelStack.PopMatrix();
+	viewStack.PopMatrix();
+	projectionStack.PopMatrix();
+}
+
+void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, Mtx44& TRS)
+{
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.LoadMatrix(TRS);
 
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();

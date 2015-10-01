@@ -3,6 +3,8 @@
 /* stream classes */
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <vector>
 
 /* utilities */
 #include "utilities.h"

@@ -20,6 +20,7 @@ using std::vector;
 struct TileMap
 {
 	Mesh* mesh;
+	Mesh* previewMesh;
 	string name;
 	int totalTiles;
 	float tileScale;
@@ -31,6 +32,7 @@ public:
 	enum TILE_MAP
 	{
 		TILEMAP_NATURE,
+		TILEMAP_MARKET,
 		TOTAL_TILEMAP,
 	};
 
