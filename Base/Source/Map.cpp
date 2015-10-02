@@ -4,9 +4,10 @@ Layer* Map::layer_ptr = NULL;
 Vector3 Map::global_vec;
 
 /* Constructor/destructor */
-Map::Map(string name)
+Map::Map(string name, int index)
 {
 	this->name = name;
+	this->index = index;
 }
 
 Map::~Map()
@@ -78,4 +79,14 @@ int Map::getMapSize()
 string Map::getName()
 {
 	return name;
+}
+
+int Map::getIndex()
+{
+	return index;
+}
+
+void Map::setIndex(int i)
+{
+	index = i;
 }

@@ -19,6 +19,8 @@ using namespace std;
 
 /*************************************************************/
 /*
+	Controller for models.
+
 	Contains:
 		vectors of various game objects.
 		individual game objects.

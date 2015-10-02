@@ -23,14 +23,18 @@ public:
 
 	enum BUTTON_LIST
 	{
-		/* Buttons */
+		/* EDIT_LAYER */
 		BUTTON_PREVIOUS_BLOCK,	//left
 		BUTTON_NEXT_BLOCK,	//right
+
+		/* CHOOSE_TILE_MAP */
 		BUTTON_CHANGE_TILE_MAP,
-		/*BUTTON_PREVIOUS_LVL,
-		BUTTON_NEXT_LVL,
-		BUTTON_SELECT_NEW_MAP,
-		,*/
+
+		/* ADD_NEW_MAP */
+		BUTTON_ADD_NEW_MAP,	//also choose map
+
+		/* ADD_NEW_LAYER */
+		BUTTON_ADD_NEW_LAYER,	//also choose layer
 
 		TOTAL_BUTTON,
 	};
@@ -78,6 +82,7 @@ public:
 
 	/* Path for map file and tile map */
 	int currentLayer;	//current layer index of current map
+	int currentMap;	//current map
 	string currentMapName;	//curent map
 	vector<Map*> mapList;
 	char* tileMapPath;

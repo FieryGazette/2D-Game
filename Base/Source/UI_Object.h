@@ -19,7 +19,7 @@ public:
 	void Set(Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
 	void Init();
 
-	virtual bool CollisionDetection(UI_Object* checkMe);
+	bool CollisionDetection(UI_Object* checkMe);
 	virtual void Update(double dt);
 
 	/* Getter setter */
@@ -46,6 +46,7 @@ protected:
 /********************************************************/
 class Button : public UI_Object
 {
+	static float wordScale;	//percentage in regards to button scale
 public:
 	/*** constructor / destructor ***/
 	Button();
@@ -53,12 +54,13 @@ public:
 
 	/*** core ***/
 	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active, float depression);
-	virtual bool CollisionDetection(UI_Object* checkMe);
+	bool CollisionDetection(UI_Object* checkMe, bool clicked);
 	virtual void Update(double dt);
 
 	/*** Getter/setter ***/
 	void SetWord(string word);
 	string getWord();
+	static float getWordScale();
 	bool getClicked();
 private:
 	string word;
@@ -136,5 +138,34 @@ public:
 	int getTotalItem();
 	float getItemScale();
 };
+
+/********************************************************/
+/*
+	Textbox, type your message here.
+	Entering/confirming your text means that that text is registered with this textbox.
+	If text too long,
+*/
+/********************************************************/
+//class TextBox : public UI_Object
+//{
+//	string text;
+//	float textScale;	//text scale will be 75% of the y scale
+//	bool activated;
+//public:
+//	/*** constructor / destructor ***/
+//	TextBox();
+//	~TextBox();
+//
+//	/*** core ***/
+//	void Set(Mesh* mesh, float scale, float posX, float posY, float zHeight, bool active);
+//
+//	virtual void Init();
+//
+//	bool CheckClickQuit(UI_Object* checkMe, bool clicked);
+//	virtual void Update(double dt);
+//
+//	/* Getter/setter */
+//	UI_Object* getButton();
+//};
 
 #endif

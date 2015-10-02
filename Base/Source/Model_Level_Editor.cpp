@@ -33,6 +33,9 @@ void Model_Level_Editor::Init()
 
 	initLocalAlready = true;	//no, then first time init
 
+	/* Current map */
+	currentMap = 0;	//points to map 0
+
 	/* UI Vector resize */
 	UI_Object_List.resize(TOTAL_UI);
 	Button_List.resize(TOTAL_BUTTON);
@@ -98,12 +101,14 @@ void Model_Level_Editor::InitUtilities()
 
 void Model_Level_Editor::InitAddNewMap()
 {
-
+	Button_List[BUTTON_ADD_NEW_MAP] = new Button;
+	Button_List[BUTTON_ADD_NEW_MAP]->Set("Add new Map", Geometry::meshList[Geometry::GEO_BOTTOM], 32, 10, 17, 110, 1, true, 0.02f);
 }
 
 void Model_Level_Editor::InitAddNewLayer()
 {
-
+	Button_List[BUTTON_ADD_NEW_LAYER] = new Button;
+	Button_List[BUTTON_ADD_NEW_LAYER]->Set("Add new Layer", Geometry::meshList[Geometry::GEO_BOTTOM], 32, 10, 17, 97, 1, true, 0.02f);
 }
 
 void Model_Level_Editor::InitEditLayer()
@@ -115,7 +120,7 @@ void Model_Level_Editor::InitEditLayer()
 	z += 1.05f;
 
 	/** Tilemap stuff **/
-	current_TileMap = Geometry::TILEMAP_MARKET;
+	current_TileMap = Geometry::TILEMAP_NATURE;
 	tile_startPos.Set(25.f, 5.5f, z);
 	currentBlock = 1;
 	tileScale = 10.f;
@@ -148,7 +153,7 @@ void Model_Level_Editor::InitChooseTileMap()
 	/* Button for selecting tilemap */
 	Button_List[BUTTON_CHANGE_TILE_MAP] = new Button;
 	Button_List[BUTTON_CHANGE_TILE_MAP]->Set("Select TileMap", Geometry::meshList[Geometry::GEO_CUBE_GREEN], 
-		25.f, 10.f, 18.f, 55.5f, z, true, 0.1f);
+		35.f, 10.f, 18.f, 55.5f, z, true, 0.1f);
 
 	/* pop-up for selecting tile map */
 	tileMap_Menu = new Popup;
@@ -175,7 +180,7 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 {
 	Model::Update(dt, myKeys, cursorPos);
 
-	/************************************* Switch state *************************************/
+	/************************************* Switching state *************************************/
 	if( myKeys[AIM] )
 	{
 		switchState = true;
@@ -183,19 +188,25 @@ void Model_Level_Editor::Update(double dt, bool* myKeys, Vector3& cursorPos)
 	}
 
 	/** Selecting new tilemap **/
-	if( myKeys[SHOOT] )
+	/** select new tileMap **/
+	if( Button_List[BUTTON_CHANGE_TILE_MAP]->CollisionDetection(cursor, myKeys[SHOOT]) )
 	{
-		/** select new tileMap **/
-		if( Button_List[BUTTON_CHANGE_TILE_MAP]->CollisionDetection(cursor) )
+		//change to edit map, if click again, when button cools down then change back to previous state
+		if( state != CHOOSE_TILE_MAP )
 		{
-			//change to edit map, if click again, when button cools down then change back to previous state
-			if( state != CHOOSE_TILE_MAP )
-			{
-				previousState = state;
-				state = CHOOSE_TILE_MAP;
-				NewStateSetup();
-			}
+			previousState = state;
+			state = CHOOSE_TILE_MAP;
+			NewStateSetup();
 		}
+	}
+
+	/** Selecting/Adding map **/
+	if( Button_List[BUTTON_ADD_NEW_MAP]->CollisionDetection(cursor, myKeys[SHOOT]) )
+	{
+		state = ADD_NEW_MAP;
+	}
+	if( Button_List[BUTTON_ADD_NEW_LAYER]->CollisionDetection(cursor, myKeys[SHOOT]) )
+	{
 	}
 
 	/************************************* Update state *************************************/
@@ -245,21 +256,26 @@ void Model_Level_Editor::UpdateAddNewMap(double dt, bool* myKeys, Vector3& curso
 	//check if it already exists
 	if( !readFromFile( map_list, name ) )
 	{
-		/* create and add this map to list */
-		writeToFile(map_list, name);
-
-		/* Create new txt file for this map */
 		ostringstream ss;
+
+		/* create and add this map to list */
 		ss.str("");
-		ss << "Maps//" << name << ".txt";
+		ss << mapList.size() + 1 << ": " << name;
+		writeToFile(map_list, ss.str());
+
+		/* Create new txt file for this map, name is index of this map */
+		ss.str("");
+		ss << "Maps//" << mapList.size() + 1 << ".txt";
 		writeToFile(ss.str(), "");
 
-		Map* map_ptr = new Map(name);
+		Map* map_ptr = new Map(name, mapList.size());
 
 		mapList.push_back(map_ptr);
 
+		/* current map is now this newly created map */
+		currentMap = mapList.back()->getIndex();	
 
-		cout << "Map created: " << name << endl;
+		cout << "Map created: " << mapList.back()->getName() << endl;
 	}
 	else
 		cout << "Map existed: " << name << endl;
@@ -279,7 +295,7 @@ void Model_Level_Editor::UpdateAddNewLayer(double dt, bool* myKeys, Vector3& cur
 	ss.str("");
 	ss << "Lvl: " << 0 << "  Tilesize: " << 32;
 	ss1.str("");
-	ss1 << "Maps//" << name << ".txt";
+	ss1 << "Maps//" << mapList[currentMap]->getIndex() + 1 << ".txt";
 	writeToFile(ss1.str(), ss.str());
 
 	state = EDIT_MAP;
@@ -296,30 +312,31 @@ void Model_Level_Editor::UpdateEditLayer(double dt, bool* myKeys, Vector3& curso
 	/******************************** If hit and click checkbox beside layer option, layer turn invisible/not visible ********************************/
 
 	/******************************** If hit right arrow, scroll right, if hit left arrow, scroll left ********************************/
-	if( myKeys[SHOOT] )
+	if( currentAction != SELECTING_TILES )
 	{
-		if( currentAction != SELECTING_TILES )
+		//right
+		if( Button_List[BUTTON_NEXT_BLOCK]->CollisionDetection(cursor, myKeys[SHOOT]) )
 		{
-			//right
-			if( Button_List[BUTTON_NEXT_BLOCK]->CollisionDetection(cursor) )
+			if( tile_startPos.x <= 0.f )
 			{
 				currentAction = SELECTING_TILES;
 				newPos = tile_startPos;
 				newPos.x += 60;
 			}
-
-			//left
-			else if( Button_List[BUTTON_PREVIOUS_BLOCK]->CollisionDetection(cursor) )
-			{
-				currentAction = SELECTING_TILES;
-				newPos = tile_startPos;
-				newPos.x -= 60;
-			}
 		}
 
-		/** If check is not SELECTING_TILES again in case in this frame click button and a tile together **/
-		if( currentAction != SELECTING_TILES )
+		//left
+		else if( Button_List[BUTTON_PREVIOUS_BLOCK]->CollisionDetection(cursor, myKeys[SHOOT]) )
 		{
+			currentAction = SELECTING_TILES;
+			newPos = tile_startPos;
+			newPos.x -= 60;
+		}
+	
+		/* Not clicking a button, then able to select tiles */
+		else if(myKeys[SHOOT])
+		{
+			/** If check is not SELECTING_TILES again in case in this frame click button and a tile together **/
 
 			/******************************** If click on a tile, that tile is selected ********************************/
 			Collision::setStartEnd2D(tile_startPos, Vector3(tileScale, tileScale, tileScale), checkStart, checkEnd);
@@ -339,7 +356,6 @@ void Model_Level_Editor::UpdateEditLayer(double dt, bool* myKeys, Vector3& curso
 			}
 		}
 	}
-
 	/******************************** Check cursor pos.x / tileSize and cursor pos.y / tileSize to get current tile ********************************/
 
 	/******************************** Left click == add tile ********************************/
@@ -394,6 +410,7 @@ void Model_Level_Editor::NewStateSetup()
 		tileSelectionMenu->SetActive(true);
 		break;
 	case EDIT_LAYER:
+		tile_startPos.SetXY(25.f, 5.5f);
 		break;
 	}
 }

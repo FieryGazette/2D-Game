@@ -77,6 +77,7 @@ void UI_Object::Update(double dt)
 }
 
 /** Button **/
+float Button::wordScale = 0.4f;
 double Button::depressionTime = 0.2f;
 
 /*** constructor / destructor ***/
@@ -98,7 +99,7 @@ void Button::Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX
 	this->depression = depression;
 }
 
-bool Button::CollisionDetection(UI_Object* checkMe)
+bool Button::CollisionDetection(UI_Object* checkMe, bool activate)
 {
 	/* If clicked before already, not considerd collide */
 	if( clicked )
@@ -107,12 +108,16 @@ bool Button::CollisionDetection(UI_Object* checkMe)
 	}
 
 	/* Start and end */
-	bool b = UI_Object::CollisionDetection(checkMe);
-
-	if( b && !clicked )
+	bool b = false;
+	if( activate )
 	{
-		clicked = true;
-		position -= scale * depression;
+		b = UI_Object::CollisionDetection(checkMe);
+
+		if( b && !clicked )
+		{
+			clicked = true;
+			position -= scale * depression;
+		}
 	}
 
 	return b;
@@ -147,6 +152,12 @@ bool Button::getClicked()
 {
 	return clicked;
 }
+
+float Button::getWordScale()
+{
+	return wordScale;
+}
+
 
 /** Popup **/
 /*** constructor / destructor ***/

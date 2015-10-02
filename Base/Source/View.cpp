@@ -359,9 +359,12 @@ Vector3 pos11, scale11;
 string word11;
 void View::RenderUI()
 {
+	if( model->UI_Object_List.size() == 0 )
+		return;
+
 	/*************** Render UI ***************/
 	UI_Object* u;
-	
+	float z = model->UI_Object_List[0]->getPosition().z;
 	for(vector<UI_Object*>::iterator it = model->UI_Object_List.begin(); it != model->UI_Object_List.end(); ++it)
 	{
 		u = (UI_Object*)*it;
@@ -371,16 +374,20 @@ void View::RenderUI()
 			pos11 = u->getPosition();
 			scale11 = u->getScale();
 
-			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, pos11.z, 0);
+			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, z, 0);
+			z += 0.05f;
 		}
 	}
 }
 
 void View::RenderButton()
 {
+	if( model->Button_List.size() == 0 )
+		return;
+
 	/*************** Render Button ***************/
 	Button* v;
-	
+	float z = model->Button_List[0]->getPosition().z;
 	for(vector<Button*>::iterator it = model->Button_List.begin(); it != model->Button_List.end(); ++it)
 	{
 		v = (Button*)*it;
@@ -390,15 +397,18 @@ void View::RenderButton()
 			pos11 = v->getPosition();
 			scale11 = v->getScale();
 
-			RenderMeshIn2D(v->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, pos11.z, 0);
-		}
+			RenderMeshIn2D(v->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, z, 0);
+		
 
-		/** word **/
-		word11 = v->getWord();
-		if( word11.length() > 0 )
-		{
-			RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], word11, Color(61.f / 255.f, 209.f / 255.f, 189.f / 255.f), v->getScale().y * 0.3f, 
-				pos11.x, pos11.y, pos11.z + 0.01f);
+			/** word **/
+			word11 = v->getWord();
+			if( word11.length() > 0 )
+			{
+				RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], word11, Color(61.f / 255.f, 209.f / 255.f, 189.f / 255.f), v->getScale().y * Button::getWordScale(), 
+					pos11.x, pos11.y, z);
+			}
+
+			z += 0.05f;
 		}
 	}
 }

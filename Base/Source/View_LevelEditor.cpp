@@ -92,6 +92,9 @@ void View_Level_Editor::Render(const float fps)
 		if( pos11.x > end )
 			break;
 	}
+
+	/* Test string */
+	RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], "FUCK U", Color(1, 0, 1), 5, 50, 50, 2);
 }
 
 void View_Level_Editor::RenderCollideBox()

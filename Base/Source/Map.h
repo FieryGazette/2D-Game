@@ -14,6 +14,7 @@ private:
 	vector<Layer*> layerList;
 	int totalLayers;
 	string name;
+	int index;	//index in list
 
 	/* Utilities */
 	static float offset;	//offset btw diff layers
@@ -21,7 +22,7 @@ private:
 	static Vector3 global_vec;
 public:
 	/* Constructor/destructor */
-	Map(string name);
+	Map(string name, int index);
 	~Map();
 
 	/* Core */
@@ -37,6 +38,8 @@ public:
 	int getLayerSize(int layerIndex);	//how many tiles
 	int getMapSize();	//how many layers
 	string getName();
+	int getIndex();
+	void setIndex(int i);
 };
 
 
