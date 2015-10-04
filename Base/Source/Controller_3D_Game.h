@@ -8,15 +8,6 @@
 
 class Controller_3D_Game : public Controller
 {
-/********************** Models **********************/
-	Model_Gameplay* Gameplay; 
-	Model_Level_Editor* Level_Editor;
-	Model_MainMenu* mainMenu;
-
-/********************** Views **********************/
-	View_Main_Menu* view_MainMenu;
-	View_Level_Editor* view_LevelEditor;
-	View_3D_Game* view_3D_Game;
 
 public:
 /******************** core functions **********************/
@@ -36,9 +27,6 @@ public:
 
 	/** Exit **/
 	virtual void Exit();
-
-/********************* getter/setters *********************/
-	bool* getKeyPressed();
 
 /********************* constructor / destructor *********************/
 	Controller_3D_Game();

@@ -1,15 +1,17 @@
 #include "Model.h"
+#include "Controller.h"
 #include "GL\glew.h"
 #include <sstream>
 Camera Model::camera;
-float Model::fovAngle;	//this angle is used for fov
 bool Model::InitAlready = false;
 bool Model::switchState = false;
-unsigned short Model::m_2D_view_width;
-unsigned short Model::m_2D_view_height;
 UI_Object* Model::cursor;
 string Model::map_list = "";
 Model::STATES Model::currentState = IN_GAME;
+unsigned short Model::m_2D_view_width = 160.f;	//camera view size X
+unsigned short Model::m_2D_view_height = 120.f;	//camera view size Y
+unsigned short Model::m_view_width = 2400.f;	//camera view size X
+unsigned short Model::m_view_height = 1600.f;	//camera view size Y
 
 /*********** constructor/destructor ***************/
 Model::Model()
@@ -26,7 +28,6 @@ void Model::Init()
 {
 	/*** Stuff that need to always re-init here ***/
 
-
 	/*** Only init once stuff below here ***/
 	if( InitAlready )	//init already no need init again
 		return;
@@ -37,17 +38,13 @@ void Model::Init()
 	//2D: look to Z
 	camera.Init(Vector3(0.f, 0.f, 5.f), Vector3(0.f, 0.f, 4.f), Vector3(0, 1, 0));
 
-	/* Coord for UI */
-	m_2D_view_width = 160.f;
-	m_2D_view_height = 120.f;
-
 	bLightEnabled = true;
 
 	InitAlready = true;
 
 	/* UI Object */
 	cursor = new UI_Object;
-	cursor->Set(Geometry::meshList[Geometry::GEO_CUBE_GREEN], 
+	cursor->Set("", Geometry::meshList[Geometry::GEO_CUBE_GREEN], 
 		3.f, 3.f, 0.f, 0.f, 9.f, true);
 	
 	/* Name of map list .txt */
@@ -59,12 +56,9 @@ void Model::InitMesh()
 	Geometry::Init();
 }
 
-void Model::Update(double dt, bool* myKeys, Vector3& cursorPos)
+void Model::Update(double dt, bool* myKeys)
 {
-	/* openGL stuff */
-	UpdateOpenGL(dt, myKeys);
-
-	cursor->SetPosition(cursorPos);
+	cursor->Translate(getCursorPos(Controller::GetCursorPos()));
 
 	/* Sprite animation */
 	for(std::vector<SpriteAnimation*>::iterator it = Geometry::animation.begin(); it != Geometry::animation.end(); ++it)
@@ -78,18 +72,6 @@ void Model::Update(double dt, bool* myKeys, Vector3& cursorPos)
 	/* Framerate checker: if drop below 57, performance issues */
 	if(fps < 58.f)
 		cout << "Framerate dropped to: " << fps << endl;
-}
-
-void Model::UpdateOpenGL(double dt, bool* myKeys)
-{
-	/*if(myKeys[KEY_1])
-		glEnable(GL_CULL_FACE);
-	if(myKeys[KEY_2])
-		glDisable(GL_CULL_FACE);
-	if(myKeys[KEY_3])
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	if(myKeys[KEY_4])
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 }
 
 void Model::Exit()
@@ -115,14 +97,22 @@ void Model::OldStateExit()
 
 /*********** getter / setters ***************/
 bool Model::getbLightEnabled(){return bLightEnabled;}
-float Model::getFOV(){return fovAngle;}
 Camera* Model::getCamera(){return &camera;}
-Vector3 Model::getWorldDimension(){return worldDimension;}
 unsigned short Model::getViewWidth(){return m_view_width;}
 unsigned short Model::getViewHeight(){return m_view_height;}
-unsigned short Model::get2DViewWidth(){return m_2D_view_width;}
-unsigned short Model::get2DViewHeight(){return m_2D_view_height;}
+unsigned short Model::getViewWidth2D(){return m_2D_view_width;}
+unsigned short Model::getViewHeight2D(){return m_2D_view_height;}
 bool Model::getInitLocal(){return initLocalAlready;}
+
+Vector3 Model::getCursorPos(Vector2 posOnScreen)
+{
+	int w = View::getScreenWidth();
+	int h = View::getScreenHeight();
+
+	float posX = static_cast<float>(posOnScreen.x) / w * m_2D_view_width;
+	float posY = (h - static_cast<float>(posOnScreen.y)) / h * m_2D_view_height;
+	return Vector3(posX, posY, 0);
+}
 
 Position Model::getLightPos(int index)
 {

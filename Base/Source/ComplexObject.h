@@ -29,7 +29,8 @@ public:
 
 	/*** core ***/
 	void Set(string name);
-	void Init();
+	virtual void Init();
+	virtual void Draw();
 
 	/*** getters setter ***/
 	Vector3 getMainPos();

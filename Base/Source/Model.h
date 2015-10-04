@@ -46,23 +46,53 @@ public:
 
 /*********** vectors ***********/
 	vector<UI_Object*> UI_Object_List;
-	vector<Button*> Button_List;
-	vector<Object*> elementObject;	//sky, clouds stuff player cannot reach
+	vector<Object*> elementObject;
 	static UI_Object* cursor;
 
+	/*********** constructor/destructor ***************/
+	Model();
+	virtual ~Model();
+
+	/*********** Set-up ***************/
+	virtual void Init();
+
+	/*********** Runtime ***************/
+	virtual void Update(double dt, bool* myKeys);
+
+	/*********** Quit ***************/
+	virtual void Exit();
+
+
+	/*********** getter / setters ***************/
+	Vector3 getCursorPos(Vector2 posOnScreen);
+	bool getbLightEnabled();
+	float getFOV();
+	static Camera* getCamera();
+	float getFPS();
+	Position getLightPos(int index);
+	vector<Object*>* getObject();
+	Object* getObject(int index);
+	static unsigned short getViewWidth();
+	static unsigned short getViewHeight();
+	static unsigned short getViewWidth2D();
+	static unsigned short getViewHeight2D();
+	static bool getSwitchState();
+	bool getInitLocal();
+	static STATES getCurrentState();
+	static void SetSwitchState(bool b);
+	Vector3 getWorldDimension();
+
 protected:
-/********************** View size *****************************/
-	unsigned short m_view_width;	//camera view size X
-	unsigned short m_view_height;	//camera view size Y
+	/********************** View size *****************************/
+	static unsigned short m_view_width;	//camera view size X
+	static unsigned short m_view_height;	//camera view size Y
 
-	static unsigned short m_2D_view_width;
-	static unsigned short m_2D_view_height;
-
-	Vector3 worldDimension;	//max dimemsion for in-game world (eg. 1000 by 1000 by 1000 world space)
+	/* For UI */
+	static unsigned short m_2D_view_width;	//camera view size X 2D
+	static unsigned short m_2D_view_height;	//camera view size Y 2D
 
 	/************* Camera *****************/
-	static Camera camera;
-	static float fovAngle;	//this angle is used for fov
+	static Camera camera;	//2D camera
 
 	/************* Light *****************/
 	bool bLightEnabled;
@@ -77,47 +107,17 @@ protected:
 	bool initLocalAlready;	//have we init these local stuff already?
 
 	/*** Switch state? ***/
-	static bool switchState;
+	static bool switchState;	//do we switch to another model?
 	static STATES currentState;
 
 	/*********** Text files ************/
 	static string map_list;	//store all existing maps name
-public:
 
-	/*********** constructor/destructor ***************/
-	Model();
-	virtual ~Model();
-
-	/*********** core functions ***************/
-	virtual void Init();
+	/*********** Utilities ************/
 	void InitMesh();
-
-	virtual void NewStateSetup();	//if changing state, call this function so new state can init stuff
-	virtual void OldStateExit();	//if changing state, call this function so previous state can exit
-	virtual void Update(double dt, bool* myKeys, Vector3& cursorPos);
-	void UpdateOpenGL(double dt, bool* myKeys);
-	void UpdateFOV(double dt, bool* myKeys);
-
-	virtual void Exit();
-
-
-	/*********** getter / setters ***************/
-	bool getbLightEnabled();
-	float getFOV();
-	static Camera* getCamera();
-	float getFPS();
-	Position getLightPos(int index);
-	vector<Object*>* getObject();
-	Object* getObject(int index);
-	unsigned short getViewWidth();
-	unsigned short getViewHeight();
-	static bool getSwitchState();
-	static unsigned short get2DViewWidth();
-	static unsigned short get2DViewHeight();
-	bool getInitLocal();
-	static STATES getCurrentState();
-	static void SetSwitchState(bool b);
-	Vector3 getWorldDimension();
+	/* Use only if this model will be having enum */
+	virtual void NewStateSetup() = 0;	//if changing LOCAL state, call this function so new state can init stuff
+	virtual void OldStateExit() = 0;	//if changing LOCAL state, call this function so previous state can exit
 };
 
 #endif

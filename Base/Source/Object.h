@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "Entity.h"
+#include "AdvancedEntity.h"
 
 /***********************************************************
 
@@ -17,7 +17,7 @@ class Object
 public:
 	/*** modifyable data ***/
 	Object* parent;
-	Entity entity;
+	AdvancedEntity entity;
 	Collision collideBox;	//collision box
 	bool collided;
 public:
@@ -27,7 +27,8 @@ public:
 
 	/*** core ***/
 	void Set(string name, Mesh* mesh, Object* parent);
-	void Init();
+	virtual void Init();
+	virtual void Draw();
 
 	/*** utilities ***/
 	void transformWithParent();	//position recalculated after transformation
@@ -52,7 +53,7 @@ public:
 	Vector3 getScale();
 	Vector3 getPosition();
 	Collision* getBbox();
-	Entity* getEntity();
+	AdvancedEntity* getEntity();
 	Mtx44* getTRS();
 	void setActive(bool b);
 	bool getActive();

@@ -16,7 +16,7 @@ public:
 
 	virtual void NewStateSetup();
 	virtual void OldStateExit();
-	virtual void Update(double dt, bool* myKeys, Vector3& cursorPos);
+	virtual void Update(double dt, bool* myKeys);
 
 	virtual void Exit();
 };

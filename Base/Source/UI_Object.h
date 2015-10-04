@@ -10,17 +10,21 @@
 /********************************************************/
 class UI_Object : public Entity
 {
+protected:
+	string word;
+	static float wordScale;	//percentage in regards to button scale
 public:
 	/*** constructor / destructor ***/
 	UI_Object();
 	~UI_Object();
 
 	/*** core ***/
-	void Set(Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
-	void Init();
+	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
 
-	bool CollisionDetection(UI_Object* checkMe);
 	virtual void Update(double dt);
+	virtual void Draw();
+	virtual bool CollisionDetection(UI_Object* checkMe, bool clicked);
+	void Init();
 
 	/* Getter setter */
 	void SetPosition(Vector3& pos);
@@ -31,6 +35,10 @@ public:
 
 	bool getActive();
 	void SetActive(bool active);
+
+	virtual string getWord();
+
+	float getWordScale();
 
 	Mesh* getMesh();
 
@@ -46,7 +54,6 @@ protected:
 /********************************************************/
 class Button : public UI_Object
 {
-	static float wordScale;	//percentage in regards to button scale
 public:
 	/*** constructor / destructor ***/
 	Button();
@@ -54,16 +61,13 @@ public:
 
 	/*** core ***/
 	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active, float depression);
-	bool CollisionDetection(UI_Object* checkMe, bool clicked);
 	virtual void Update(double dt);
+	virtual void Draw();
+	virtual bool CollisionDetection(UI_Object* checkMe, bool clicked);
 
 	/*** Getter/setter ***/
-	void SetWord(string word);
-	string getWord();
-	static float getWordScale();
 	bool getClicked();
 private:
-	string word;
 	static double depressionTime;
 	float depression;
 	bool clicked;
@@ -88,10 +92,9 @@ public:
 	/*** core ***/
 	void Set(string word, Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
 
-	virtual void Init();
-
-	bool CheckClickQuit(UI_Object* checkMe, bool clicked);
 	virtual void Update(double dt);
+	virtual void Draw();
+	virtual bool CollisionDetection(UI_Object* checkMe, bool clicked);
 
 	/* Getter/setter */
 	UI_Object* getButton();
@@ -123,13 +126,13 @@ public:
 	~Selection_Menu();
 
 	/*** core ***/
-	void Set( float scale, float itemScale, float posX, float posY, float zHeight, bool active);
+	void Set(float sc, float itemScale, float posX, float posY, float zHeight, bool active);
 	void AddItem(Mesh* mesh);
+	void Init();
 
-	virtual void Init();
-
-	bool CollisionDetection(UI_Object* checkMe, bool clicked);
 	virtual void Update(double dt);
+	virtual void Draw();
+	virtual bool CollisionDetection(UI_Object* checkMe, bool clicked);
 
 	/*** Getter/setter ***/
 	int getCurrentItem();
@@ -143,29 +146,30 @@ public:
 /*
 	Textbox, type your message here.
 	Entering/confirming your text means that that text is registered with this textbox.
-	If text too long,
+	If text too long, will shift to right.
 */
 /********************************************************/
-//class TextBox : public UI_Object
-//{
-//	string text;
-//	float textScale;	//text scale will be 75% of the y scale
-//	bool activated;
-//public:
-//	/*** constructor / destructor ***/
-//	TextBox();
-//	~TextBox();
-//
-//	/*** core ***/
-//	void Set(Mesh* mesh, float scale, float posX, float posY, float zHeight, bool active);
-//
-//	virtual void Init();
-//
-//	bool CheckClickQuit(UI_Object* checkMe, bool clicked);
-//	virtual void Update(double dt);
-//
-//	/* Getter/setter */
-//	UI_Object* getButton();
-//};
+class TextBox : public UI_Object
+{
+	string returnText;
+	bool activated;
+	bool typed;	//a letter has benn typed inside
+	static float max_wordWidth;	//max word width percentage
+public:
+	/*** constructor / destructor ***/
+	TextBox();
+	~TextBox();
+
+	/*** core ***/
+	void Set(Mesh* mesh, float scaleX, float scaleY, float posX, float posY, float zHeight, bool active);
+
+	virtual void Update(double dt);
+	virtual void Draw();
+	virtual bool CollisionDetection(UI_Object* checkMe, bool clicked);
+
+	/** Getter/setter **/
+	virtual string getWord();
+	float getStartPosX();	//get start pos for word X
+};
 
 #endif

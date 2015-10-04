@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "View.h"
 
 /***** constructor / destructor *****/
 Object::Object()
@@ -12,7 +13,7 @@ Object::~Object()
 /****** core ******/
 void Object::Set(string name, Mesh* mesh, Object* parent)
 {
-	entity.Set(name, mesh, parent->getEntity());
+	entity.Set(mesh, parent->getEntity());
 	collided = false;
 	this->parent = parent;
 }
@@ -27,6 +28,14 @@ void Object::Init()
 
 	/* OP bound box */
 	collideBox.Set(entity.getPosition(), entity.getScale(), Collision::BOX);
+}
+
+void Object::Draw()
+{
+	if( entity.getActive() )
+	{
+		View::RenderMesh(*entity.getTRS(), entity.getMesh(), false);
+	}
 }
 
 /***** transformation *****/
@@ -101,4 +110,4 @@ Vector3 Object::getPosition(){return entity.getPosition();}
 Mtx44* Object::getTRS(){return entity.getTRS();}
 void Object::setActive(bool b){entity.setActive(b);}
 bool Object::getActive(){return entity.getActive();}
-Entity* Object::getEntity(){return &entity;}
+AdvancedEntity* Object::getEntity(){return &entity;}

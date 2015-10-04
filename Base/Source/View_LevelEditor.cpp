@@ -27,49 +27,25 @@ void View_Level_Editor::Render(const float fps)
 	View::StartRendering(fps);
 
 	/** UI **/
-	RenderUI();
-
+	for(int i = 0; i < model->UI_Object_List.size(); ++i)
+		RenderUI(model->UI_Object_List[i]);
+	
 	/** Button **/
-	RenderButton();
+	for(int i = 0; i < model->buttonList.size(); ++i)
+		RenderUI(model->buttonList[i]);
 
-	/** Popup **/
-	if( model->tileMap_Menu->getActive() )
-	{
-		RenderMeshIn2D(model->tileMap_Menu->getMesh(), false, *model->tileMap_Menu->getTRS());
+	/** Text box **/
+	RenderUI(model->new_map_textbox);
 
-		/* Button */
-		RenderMeshIn2D(model->tileMap_Menu->getButton()->getMesh(), false, *model->tileMap_Menu->getButton()->getTRS());
-	}
+	/** Pop up **/
+	RenderUI(model->tileSelectionMenu);
 
-	/** Utility UI **/
-	if( model->useMe.getActive() )
-	{
-		pos11 = model->useMe.getPosition();
-		scale11 = model->useMe.getScale();
-		RenderMeshIn2D(model->useMe.getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, pos11.z, 0);
-	}
-
-	/** selection menu **/
-	if( model->tileSelectionMenu->getActive() )
-	{
-		for(int i = 0; i < model->tileSelectionMenu->getTotalItem(); ++i)
-		{
-			/* So that tile sets final scale will match given scale */
-			float t_scale = model->tileSelectionMenu->getItemScale();
-			pos11 = model->tileSelectionMenu->getItemPos(i);
-			RenderMeshIn2D(model->tileSelectionMenu->getItemMesh(i), false, t_scale, t_scale, pos11.x, pos11.y, pos11.z, 0);
-
-			/* Selected */
-			if( model->tileSelectionMenu->getCurrentItem() == i )	//selected this block
-			{
-				RenderMeshIn2D(Geometry::meshList[Geometry::GEO_SELECTOR], false, t_scale * 1.1f, t_scale * 1.1f, pos11.x, pos11.y, pos11.z, 0);
-			}
-		}
-	}
+	/** Cursor **/
+	RenderUI(model->cursor);
 
 	/*************** Render TileMap ***************/
 	float start = model->getCamera()->position.x;
-	float end = start + model->get2DViewWidth();
+	float end = start + model->getViewWidth();
 	pos11 = model->tile_startPos;
 	Vector3 selector;
 
@@ -92,9 +68,6 @@ void View_Level_Editor::Render(const float fps)
 		if( pos11.x > end )
 			break;
 	}
-
-	/* Test string */
-	RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], "FUCK U", Color(1, 0, 1), 5, 50, 50, 2);
 }
 
 void View_Level_Editor::RenderCollideBox()

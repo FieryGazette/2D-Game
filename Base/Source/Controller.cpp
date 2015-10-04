@@ -10,9 +10,10 @@ double Controller::scrollxPos = 0.f;
 double Controller::scrollyPos = 0.f;
 bool Controller::myKeys[TOTAL_CONTROLS] = {false};
 char Controller::inputChar[OPEN] = {0};
+vector<char> Controller::typableCharacters;
 
 /********************** mouse **********************/
- Vector3 Controller::cursorPos;
+ Vector2 Controller::cursorPos;
 int Controller::mouseRightButton;
 int Controller::mouseLeftButton;
 
@@ -30,19 +31,163 @@ Controller::~Controller()
 /******************** core functions **********************/
 void Controller::Init()
 {
-	//set both timers to 0
+	/** Timers: set both timers to 0 **/
 	m_dElapsedTime = 0.0;
 	m_dAccumulatedTime_thread1 = 0.0;
 	m_dAccumulatedTime_thread2 = 0.0;
+
+	//mouse button
+	mouseLeftButton = glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT);
+	mouseRightButton = glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_RIGHT);
+
+	//hide the cursor
+	glfwSetInputMode(currentView->getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+	//controls
+	InitControls();
+
+	/*** Create views and models ***/
+/********************** Models **********************/
+	Gameplay = new Model_Gameplay;
+	Level_Editor = new Model_Level_Editor;	
+	mainMenu = new Model_MainMenu;
+
+/********************** Views **********************/
+	view_MainMenu = new View_Main_Menu(mainMenu, 975, 650, View::TWO_D);
+	view_LevelEditor = new View_Level_Editor(Level_Editor, 975, 650, View::TWO_D);
+	view_3D_Game = new View_3D_Game(Gameplay, 975, 650, View::TWO_D);
+
+/********************** Initialize **********************/
+	//init view
+	currentView = view_3D_Game;
+	InitCurrentView();
+
+	//set model
+	currentModel = Gameplay;
+	InitCurrentModel();
 }
 
-void Controller::RunGameLoop()
+void Controller::InitControls()
 {
-	/* Any stuff to set up? */
+	//keys
+	for(int i = 0; i <= OPEN; ++i) //all 256 chars
+		myKeys[i] = false;
+
+	inputChar[FORWARD] = 'W';
+	inputChar[LEFT] = 'A';
+	inputChar[BACKWARD] = 'S';
+	inputChar[RIGHT] = 'D';
+	inputChar[CROUCH] = 'C';
+	inputChar[PAUSE] = 'P';
+	inputChar[OPEN] = 'O';
+	inputChar[JUMP] = ' ';
+	inputChar[RELOAD] = 'R';
+	inputChar[FLY_UP] = 'K';
+	inputChar[FLY_DOWN] = 'L';
+
+	/* Typable characters */
+	for(char a = 'A'; a <= 'Z'; ++a)
+	{
+		typableCharacters.push_back(a);
+	}
+
+	typableCharacters.push_back(' ');
+}
+
+void Controller::InitCurrentModel()
+{
+	/* Init model and other related stuff */
+	currentModel->Init();
+}
+
+void Controller::InitCurrentView()
+{
+	/* Init view and other related stuff */
+	currentView->Init();
+}
+
+void Controller::Run()
+{
+	//Main Loop
+	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
+
+	while (!glfwWindowShouldClose(currentView->getWindow()) && !IsKeyPressed(VK_ESCAPE))
+	{
+		//get the elapsed time
+		m_dElapsedTime = m_timer.getElapsedTime();
+		m_dAccumulatedTime_thread1 += m_dElapsedTime;
+		m_dAccumulatedTime_thread2 += m_dElapsedTime;
+
+		/* fps */
+		fps = (float)(1.f / m_dElapsedTime);
+
+		/* twin threaded approach */
+		if(m_dAccumulatedTime_thread1 > 0.01)	//update: update fps is _dAccumulatedTime_thread1 > fps
+		{
+			/* Init new model etc... */
+			SwitchModels();
+
+			/* controls */
+			UpdateMouse();
+			UpdateKeys();
+
+			/** model update **/
+			currentModel->Update(m_dElapsedTime, myKeys);
+
+			m_dAccumulatedTime_thread1 = 0.0;
+		}
+		if(m_dAccumulatedTime_thread2 > 0.003)	//render: render fps is _dAccumulatedTime_thread1 > fps
+		{
+			/** View update(rendering) **/
+			currentView->Render(fps);	//or switch to pause screen
+
+			m_dAccumulatedTime_thread2 = 0.0;
+		}
+
+		//Swap buffers
+		glfwSwapBuffers(currentView->getWindow());
+		//Get and organize events, like keyboard and mouse input, window resizing, etc...
+		glfwPollEvents();
+
+		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
+
+	} //Check if the ESC key had been pressed or if the window had been closed
 }
 
 void Controller::Exit()
 {
+	currentView->Exit();
+	currentModel->Exit();
+}
+
+void Controller::SwitchModels()
+{
+	/** Switch models based on states **/
+	if( !Model::getSwitchState() )	//if switch model flag is false, no need to switch
+		return;
+
+	switch( Model::getCurrentState() )
+	{
+	case Model::IN_GAME:
+		currentModel = Gameplay;
+		currentModel->Init();
+		currentView = view_3D_Game;
+		//currentView->SetModel(currentModel);	//need set model since edit and game use same view update 2: no need already
+		break;
+	case Model::EDIT_LEVEL:
+		currentModel = Level_Editor;
+		currentModel->Init();
+		currentView = view_LevelEditor;
+		break;
+	case Model::MAIN_MENU:
+		currentModel = mainMenu;
+		currentModel->Init();
+		currentView = view_MainMenu;
+		break;
+	}
+
+	/* Set switch state flag to false */
+	Model::SetSwitchState(false);
 }
 
 void scroll(GLFWwindow* window,double x,double y)
@@ -124,27 +269,45 @@ void Controller::UpdateKeyPressed()
 
 void Controller::UpdateMouse()
 {
-	GetCursorPos(View::getWindow_view());
+	cursorPos = GetCursor(View::getWindow());
 }
 
-void Controller::GetCursorPos(GLFWwindow* const window)
+Vector2 Controller::GetCursorPos()
+{
+	return cursorPos;
+}
+
+Vector2 Controller::GetCursor(GLFWwindow* const window)
 {
 	double x;
 	double y;
 	glfwGetCursorPos(window, &x, &y);
 
-	int w = View::getScreenWidth();
-	int h = View::getScreenHeight();
-
-	float posX = static_cast<float>(x) / w * Model::get2DViewWidth();
-	float posY = (h - static_cast<float>(y)) / h * Model::get2DViewHeight();
-	cursorPos.Set(posX, posY, 0);
+	return Vector2(x, y);
 }
 
 /********************** controller functions **********************/
 bool Controller::IsKeyPressed(unsigned short key)
 {
 	return ((GetAsyncKeyState(key) & 0x8001) != 0);
+}
+
+char Controller::characterPressed()
+{
+	for(int i = 0; i < typableCharacters.size(); ++i)
+	{
+		if( IsKeyPressed(typableCharacters[i]) )
+		{
+			return typableCharacters[i];
+		}
+	}
+
+	return '/';	//return backslash for nothing pressed
+}
+
+bool* Controller::getKeyPressed()
+{
+	return myKeys;
 }
 
 /********************** getter setter **********************/

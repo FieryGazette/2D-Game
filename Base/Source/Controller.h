@@ -39,14 +39,17 @@ public:
 
 /******************** core functions **********************/
 	void Init();
-	virtual void Run() = 0;
-	virtual void Exit();
+	void Run();
+	void Exit();
 
 /********************** controller functions **********************/
 	static bool IsKeyPressed(unsigned short key);
+	static char characterPressed();
 
 /********************** getter setter **********************/
 	float getFPS();
+	bool* getKeyPressed();
+	static Vector2 GetCursorPos();
 
 /********************* constructor / destructor *********************/
 	Controller();
@@ -62,20 +65,19 @@ protected:
 
 /********************* Core *********************/
 	/** Init **/
-	virtual void InitCurrentView() = 0;
-	virtual void InitCurrentModel() = 0;
+	void InitCurrentView();
+	void InitCurrentModel();
+	void InitControls();
 
-	/** Update **/
-	virtual void RunGameLoop();
 
-		/** Switching models **/
-		virtual void SwitchModels() = 0;	//for update changing models, like main menu to game
+	/** Switching models **/
+	void SwitchModels();	//for update changing models, like main menu to game
 
-		/* Call only when needed: if your program needs key and mouse press */
-		void UpdateKeys();
-		void UpdateMouse();
-		void UpdateKeyPressed();	//if a key is pressed, update this function
-		static void GetCursorPos(GLFWwindow* const window);	//call to get cursor pos
+	/* Call only when needed: if your program needs key and mouse press */
+	void UpdateKeys();
+	void UpdateMouse();
+	void UpdateKeyPressed();	//if a key is pressed, update this function
+	static Vector2 GetCursor(GLFWwindow* const window);	//call to get cursor pos
 
 /********************** Input **********************/
 	MODE type;	//mode
@@ -83,6 +85,16 @@ protected:
 /********************** model and view ptr **********************/
 	Model* currentModel; //points to the current model to run
 	View* currentView;	//points to the current vuew to run
+
+/********************** Models **********************/
+	Model_Gameplay* Gameplay; 
+	Model_Level_Editor* Level_Editor;
+	Model_MainMenu* mainMenu;
+
+/********************** Views **********************/
+	View_Main_Menu* view_MainMenu;
+	View_Level_Editor* view_LevelEditor;
+	View_3D_Game* view_3D_Game;
 
 /********************** Declare a window object **********************/
 	StopWatch m_timer;
@@ -96,6 +108,7 @@ protected:
 /********************** Keyboard **********************/
 	static bool myKeys[TOTAL_CONTROLS];	//all keys
 	static char inputChar[OPEN];	//for char keys
+	static vector<char> typableCharacters;	//char keys that are valid text inputs
 
 /********************** mouse **********************/
 	static int mouseRightButton;
@@ -106,7 +119,7 @@ protected:
 	static double scrollyPos;
 
 /********************** cursor **********************/
-	static Vector3 cursorPos;
+	static Vector2 cursorPos;
 };
 
 #endif

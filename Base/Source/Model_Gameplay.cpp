@@ -34,17 +34,6 @@ void Model_Gameplay::Init()
 
 	initLocalAlready = true;	//no, then first time init
 
-	/* Coord of screen */
-	//3 : 2 (Follow screen dimension)
-	m_view_width = 2400.f;
-	m_view_height = 1600.f;
-
-	/* World boundaries */
-	worldDimension.Set(800, 800, 100);
-
-	//perspective
-	fovAngle = 45;
-
 	//light
 	lightPos[0].Set(1000.f, 500.f, 0.f);
 	lightPos[1].Set(0.f, 800.f, 0.f);
@@ -142,7 +131,7 @@ void Model_Gameplay::InitObject()
 	elementObject.push_back(obj_ptr);
 }
 
-void Model_Gameplay::Update(double dt, bool* myKeys, Vector3& cursorPos)
+void Model_Gameplay::Update(double dt, bool* myKeys)
 {
 	/* Switch state */
 	if( myKeys[SHOOT] )
@@ -152,7 +141,7 @@ void Model_Gameplay::Update(double dt, bool* myKeys, Vector3& cursorPos)
 	}
 
 	/* model update */
-	Model::Update(dt, myKeys, cursorPos);
+	Model::Update(dt, myKeys);
 
 	/* Update player */
 	player.Update(dt, myKeys, elementObject);

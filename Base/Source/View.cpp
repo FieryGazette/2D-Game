@@ -316,11 +316,11 @@ void View::StartRendering(const float fps)
 	
 	/** 3D **/
 	if(mode == THREE_D)
-		perspective.SetToPerspective(model->getFOV(), m_screen_width * (1.f / m_screen_height), 0.1f, 14000.0f);
+		perspective.SetToPerspective(45, m_screen_width * (1.f / m_screen_height), 0.1f, 14000.0f);
 	
 	/** 2D **/
 	else
-		perspective.SetToOrtho(0, model->getViewWidth(), 0, model->getViewHeight(), -model->getWorldDimension().z * 0.5f, model->getWorldDimension().z * 0.5f);
+		perspective.SetToOrtho(0, Model::getViewWidth(), 0, Model::getViewHeight(), -100, 100);
 
 	projectionStack.LoadMatrix(perspective);
 
@@ -338,79 +338,14 @@ void View::StartRendering(const float fps)
 }
 
 /* Utilities */
-void View::RenderObject()
+void View::RenderObject(Object* o)
 {
-	/* Renders all objects */
-	for(vector<Object*>::iterator it = model->getObject()->begin(); it != model->getObject()->end(); ++it)
-	{
-		Object* o = (Object*)*it;
-
-		if( o->getActive() )
-		{
-			modelStack.PushMatrix();
-			modelStack.LoadMatrix( *(o->getTRS()) );
-			RenderMesh(o->getMesh(), false);
-			modelStack.PopMatrix();
-		}
-	}
+	o->Draw();
 }
 
-Vector3 pos11, scale11;
-string word11;
-void View::RenderUI()
+void View::RenderUI(UI_Object* u)
 {
-	if( model->UI_Object_List.size() == 0 )
-		return;
-
-	/*************** Render UI ***************/
-	UI_Object* u;
-	float z = model->UI_Object_List[0]->getPosition().z;
-	for(vector<UI_Object*>::iterator it = model->UI_Object_List.begin(); it != model->UI_Object_List.end(); ++it)
-	{
-		u = (UI_Object*)*it;
-
-		if( u->getActive() )
-		{
-			pos11 = u->getPosition();
-			scale11 = u->getScale();
-
-			RenderMeshIn2D(u->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, z, 0);
-			z += 0.05f;
-		}
-	}
-}
-
-void View::RenderButton()
-{
-	if( model->Button_List.size() == 0 )
-		return;
-
-	/*************** Render Button ***************/
-	Button* v;
-	float z = model->Button_List[0]->getPosition().z;
-	for(vector<Button*>::iterator it = model->Button_List.begin(); it != model->Button_List.end(); ++it)
-	{
-		v = (Button*)*it;
-
-		if( v->getActive() )
-		{
-			pos11 = v->getPosition();
-			scale11 = v->getScale();
-
-			RenderMeshIn2D(v->getMesh(), false, scale11.x, scale11.y, pos11.x, pos11.y, z, 0);
-		
-
-			/** word **/
-			word11 = v->getWord();
-			if( word11.length() > 0 )
-			{
-				RenderTextOnScreen(Geometry::meshList[Geometry::GEO_AR_CHRISTY], word11, Color(61.f / 255.f, 209.f / 255.f, 189.f / 255.f), v->getScale().y * Button::getWordScale(), 
-					pos11.x, pos11.y, z);
-			}
-
-			z += 0.05f;
-		}
-	}
+	u->Draw();
 }
 
 void View::Exit()
@@ -458,14 +393,66 @@ void View::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 }
 
-void View::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z)
+void View::RenderTextOnScreenStart0(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z)
 {
-	if(!mesh || mesh->textureID[0] <= 0 || text.length() == 0)
+	textLength = text.length();
+	if(!mesh || mesh->textureID[0] <= 0 || textLength == 0)
 		return;
 
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
-	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
+	ortho.SetToOrtho(0, Model::getViewWidth2D(), 0, Model::getViewHeight2D(), -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, z);
+	modelStack.Scale(size, size, size);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID[0]);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+
+	/* get total scale.x of string */
+	lengthOffset = FontData[text[0]] * 0.5f;
+	for(unsigned i = 0; i < textLength; ++i)
+	{
+		Mtx44 characterSpacing;
+
+		characterSpacing.SetToTranslation(lengthOffset, 0.f, 0); //1.0f is the spacing of each character, you may change this value
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		lengthOffset += FontData[text[i]];
+
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+
+	lengthOffset = 0.f;	//reset length
+	textXLength = 0.f;
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
+
+void View::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z)
+{
+	if(!mesh || mesh->textureID[0] <= 0 || text.length() == 0)
+		return;
+	
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, Model::getViewWidth2D(), 0, Model::getViewHeight2D(), -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
@@ -518,7 +505,7 @@ void View::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float s
 void View::Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, float z, int tileType)
 {
 	Mtx44 ortho;
-	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
+	ortho.SetToOrtho(0, Model::getViewWidth2D(), 0, Model::getViewHeight2D(), -10, 10);
 	projectionStack.PushMatrix();
 		projectionStack.LoadMatrix(ortho);
 		viewStack.PushMatrix();
@@ -564,7 +551,7 @@ void View::RenderTextOnScreenCutOff(Mesh* mesh, std::string text, Color color, f
 	
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
-	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
+	ortho.SetToOrtho(0, Model::getViewWidth2D(), 0, Model::getViewHeight2D(), -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
@@ -689,7 +676,7 @@ void View::RenderMesh(Mesh *mesh, bool enableLight)
 	modelView = viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
 
-	if(enableLight && model->getbLightEnabled())
+	if(enableLight)
 	{
 		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
 
@@ -729,10 +716,19 @@ void View::RenderMesh(Mesh *mesh, bool enableLight)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+/* External loading of matrix */
+void View::RenderMesh(Mtx44& TRS, Mesh* mesh, bool light)
+{
+	modelStack.PushMatrix();
+	modelStack.LoadMatrix( TRS );
+	RenderMesh(mesh, light);
+	modelStack.PopMatrix();
+}
+
 void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey, float x, float y, float z, float angle)
 {
 	Mtx44 ortho;
-	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
+	ortho.SetToOrtho(0, Model::getViewWidth2D(), 0, Model::getViewHeight2D(), -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
@@ -774,7 +770,7 @@ void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey
 void View::RenderMeshIn2D(Mesh *mesh, bool enableLight, Mtx44& TRS)
 {
 	Mtx44 ortho;
-	ortho.SetToOrtho(0, model->get2DViewWidth(), 0, model->get2DViewHeight(), -10, 10);
+	ortho.SetToOrtho(0, Model::getViewWidth2D(), 0, Model::getViewHeight2D(), -10, 10);
 	projectionStack.PushMatrix();
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();

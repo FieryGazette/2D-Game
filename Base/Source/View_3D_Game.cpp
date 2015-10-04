@@ -25,7 +25,11 @@ void View_3D_Game::Render(const float fps)
 	View::StartRendering(fps);
 
 	RenderCollideBox();
-	RenderObject();
+
+	/* Objects */
+	for(int i = 0; i < model->elementObject.size(); ++i)
+		RenderObject(model->elementObject[i]);
+
 	RenderHUD();
 }
 

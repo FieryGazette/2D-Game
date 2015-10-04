@@ -37,10 +37,10 @@ void Model_MainMenu::InitObject()
 {	
 }
 
-void Model_MainMenu::Update(double dt, bool* myKeys, Vector3& cursorPos)
+void Model_MainMenu::Update(double dt, bool* myKeys)
 {
 	/* model update */
-	Model::Update(dt, myKeys, cursorPos);
+	Model::Update(dt, myKeys);
 }
 
 void Model_MainMenu::NewStateSetup()

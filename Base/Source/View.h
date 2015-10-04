@@ -127,27 +127,30 @@ public:
 	void RenderLight();
 
 	/* 3D */
-	void RenderMesh(Mesh *mesh, bool enableLight);
-	void RenderMeshInLines(Mesh* mesh, const Vector3& position, const Vector3& scale);
+	static void RenderMesh(Mesh *mesh, bool enableLight);
+	static void RenderMeshInLines(Mesh* mesh, const Vector3& position, const Vector3& scale);
+
+	/* External loading of matrix */
+	static void RenderMesh(Mtx44& TRS, Mesh* mesh, bool light);	//includes push and pop and render
 
 	/* 2D */
-	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex=1.0f, float sizey = 1.0f, float x=0.0f, float y=0.0f, float z = 0.f, float angle = 0.f);
-	void Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, float z, int tileType);
-	void RenderMeshIn2D(Mesh *mesh, bool enableLight, Mtx44& TRS);
+	static void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex=1.0f, float sizey = 1.0f, float x=0.0f, float y=0.0f, float z = 0.f, float angle = 0.f);
+	static void Render2DTile(Mesh *mesh, bool enableLight, float size, float x, float y, float z, int tileType);
+	static void RenderMeshIn2D(Mesh *mesh, bool enableLight, Mtx44& TRS);
 	
 	/* Text */
 	//3D
-	void RenderText(Mesh* mesh, std::string text, Color color);
+	static void RenderText(Mesh* mesh, std::string text, Color color);
 
 	//2D
 	//render text with cutoff: add slash to part where supposed to go to next line
-	void RenderTextOnScreenCutOff(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
+	static void RenderTextOnScreenCutOff(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
+	static void RenderTextOnScreenStart0(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
+	static void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float z = 1.f);
 
-	/* Utilities */
-	void RenderObject();
-	void RenderUI();
-	void RenderButton();
+	/* General */
+	void RenderObject(Object* o);
+	void RenderUI(UI_Object* u);
 
 /********************** Getter/setter *****************************/
 	static unsigned short getScreenHeight();
@@ -159,6 +162,8 @@ public:
 /********************** openGL *********************************/
 	static GLFWwindow* getWindow();
 
+/********************** text **********************/
+	static float FontData[256];
 protected:
 /**************** set up initstuff, call this FIRST at Init(); ****************/
 	void StartInit();
@@ -182,9 +187,6 @@ protected:
 	static unsigned m_programID;
 	static unsigned m_parameters[U_TOTAL];
 	static float fps;
-
-/********************** text **********************/
-	static float FontData[256];
 	
 /********************** Flags **********************/
 	static bool InitAlready;

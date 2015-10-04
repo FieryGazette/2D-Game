@@ -15,9 +15,6 @@ public:
 		UI_BLOCK_SELECTION_BAR,
 		UI_SIDE_BAR,
 
-		/* Model stuff (Compulsory, must add this section to all enums concerning UI_Object_List) */
-		UI_CURSOR,
-
 		TOTAL_UI,
 	};
 
@@ -38,6 +35,9 @@ public:
 
 		TOTAL_BUTTON,
 	};
+
+	/* Button list */
+	vector<Button*> buttonList;
 
 	/** States **/
 	enum STATE
@@ -69,6 +69,9 @@ public:
 	};
 
 	ACTIONS currentAction;
+
+	/* Map stuff */
+	TextBox* new_map_textbox;
 
 	/* TileMap stuff */
 	Popup* tileMap_Menu;
@@ -118,12 +121,12 @@ public:
 
 	virtual void NewStateSetup();
 	virtual void OldStateExit();
-	virtual void Update(double dt, bool* myKeys, Vector3& cursorPos);
-		void UpdateAddNewMap(double dt, bool* myKeys, Vector3& cursorPos);
-		void UpdateAddNewLayer(double dt, bool* myKeys, Vector3& cursorPos);
-		void UpdateEditLayer(double dt, bool* myKeys, Vector3& cursorPos);
-		void UpdateEditMap(double dt, bool* myKeys, Vector3& cursorPos);
-		void UpdateChooseTileMap(double dt, bool* myKeys, Vector3& cursorPos);
+	virtual void Update(double dt, bool* myKeys);
+		void UpdateAddNewMap(double dt, bool* myKeys);
+		void UpdateAddNewLayer(double dt, bool* myKeys);
+		void UpdateEditLayer(double dt, bool* myKeys);
+		void UpdateEditMap(double dt, bool* myKeys);
+		void UpdateChooseTileMap(double dt, bool* myKeys);
 
 	virtual void Exit();
 

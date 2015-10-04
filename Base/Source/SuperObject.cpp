@@ -1,4 +1,5 @@
 #include "SuperObject.h"
+#include "View.h"
 
 /*** constructor / destructor ***/
 SuperObject::SuperObject()
@@ -15,6 +16,10 @@ void SuperObject::Set(string name)
 }
 
 void SuperObject::Init()
+{
+}
+
+void SuperObject::Draw()
 {
 }
 
